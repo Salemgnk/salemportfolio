@@ -1,10 +1,8 @@
-import './App.css';
-
 function App() {
   return (
-    <div className="app">
-      <h1>Cyberpoet Portfolio</h1>
-      <p>Building something awesome...</p>
+    <div className="bg-gray-100 text-center p-4">
+      <h1 className="text-3xl font-bold text-green-500">Tailwind 3.0 Test</h1>
+      <p className="text-lg">If this is styled, Tailwind works!</p>
     </div>
   );
 }
