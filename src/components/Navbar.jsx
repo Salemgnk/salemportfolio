@@ -13,14 +13,12 @@ const Navbar = () => {
     const handleScroll = () => {
       if (location.pathname !== '/') return;
 
-      const about = document.getElementById('about');
       const stacks = document.getElementById('stacks');
       const blog = document.getElementById('blog');
       const contact = document.getElementById('contact');
       const hero = document.getElementById('hero');
 
       setIsLightBg(
-        checkSection(about) ||
         checkSection(stacks) ||
         checkSection(blog) ||
         checkSection(contact) ||

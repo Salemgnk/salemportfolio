@@ -3,33 +3,41 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { ThemeContext } from '../context/ThemeContext';
+import reactLogo from '../assets/logos/react.svg';
+import pythonLogo from '../assets/logos/python.svg';
+import cppLogo from '../assets/logos/cpp.svg';
+import cLogo from '../assets/logos/c.svg';
+import viteLogo from '../assets/logos/vite.svg';
+import jsLogo from '../assets/logos/javascript.svg';
+import htmlLogo from '../assets/logos/html.svg';
+import cssLogo from '../assets/logos/css.svg';
+import burpLogo from '../assets/logos/burpsuite.svg';
+import wiresharkLogo from '../assets/logos/wireshark.svg';
 
 function Home() {
   const { theme } = useContext(ThemeContext);
 
   const devStacks = [
-    { name: 'React', icon: '⚛️' },
-    { name: 'Python', icon: '🐍' },
-    { name: 'C/C++', icon: '🖥️' },
-    { name: 'Vite', icon: '🚀' },
-    { name: 'JavaScript', icon: '🌐' },
-    { name: 'HTML/CSS', icon: '🎨' },
+    { name: 'React', icon: reactLogo },
+    { name: 'Python', icon: pythonLogo },
+    { name: 'C', icon: cLogo },
+    { name: 'C++', icon: cppLogo },
+    { name: 'Vite', icon: viteLogo },
+    { name: 'JavaScript', icon: jsLogo },
+    { name: 'HTML', icon: htmlLogo },
+    { name: 'CSS', icon: cssLogo },
   ];
 
   const cybersecStacks = [
-    { name: 'Burp Suite', icon: '🔍' },
-    { name: 'Ghidra', icon: '⚙️' },
-    { name: 'Wireshark', icon: '📡' },
-    { name: 'Nmap', icon: '🗺️' },
-    { name: 'Metasploit', icon: '💥' },
-    { name: 'TryHackMe', icon: '🏆' },
+    { name: 'Burp Suite', icon: burpLogo },
+    { name: 'Wireshark', icon: wiresharkLogo },
   ];
 
-  const handleScrollToAbout = (e) => {
+  const handleScrollToStacks = (e) => {
     e.preventDefault();
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({
+    const stacksSection = document.getElementById('stacks');
+    if (stacksSection) {
+      stacksSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
@@ -45,67 +53,89 @@ function Home() {
           theme === 'dark' ? 'bg-dark-900' : 'bg-gray-100'
         }`}
       >
-        <div className="relative z-10">
-          <h1 className={`font-mono text-3xl md:text-5xl mb-4 ${
-            theme === 'dark' ? 'text-green-400' : 'text-gray-800'
-          }`}>
-            {theme === 'dark' ? 'Hi, I’m Salem' : 'Hi, I’m Salem — a passionate software developer and a student at Epitech'}
-          </h1>
-          <p className={`font-mono text-lg max-w-2xl mb-8 ${
-            theme === 'dark' ? 'text-green-300' : 'text-gray-700'
-          }`}>
+        <div className="relative z-10 max-w-2xl mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className={`font-mono text-3xl md:text-5xl mb-4 ${
+              theme === 'dark' ? 'text-green-400' : 'text-gray-800'
+            }`}
+          >
+            {theme === 'dark' ? (
+              <>
+                <span className="block text-4xl">Scorpi777</span>
+                <span className="block text-lg">Seeker of exploits, guardian of systems.</span>
+              </>
+            ) : (
+              <>
+                <span className="block">Hi, I’m</span>
+                <span className="block text-4xl">Salem GNANDI</span>
+                <span className="block text-lg">A software developer at Epitech</span>
+              </>
+            )}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2 }}
+            className={`font-mono text-lg max-w-2xl mb-12 ${
+              theme === 'dark' ? 'text-green-300' : 'text-gray-700'
+            }`}
+          >
             {theme === 'dark'
-              ? 'When it comes to cybersecurity, I’m driven by curiosity and ethics. I’m an aspiring ethical hacker, diving into CTFs, vulnerabilities, and system security. With a solid base in networking, programming, and Linux, I aim to understand systems deeply — and protect them even better. My code is clean. My intentions, cleaner. But I see everything.'
-              : 'I love solving problems through clean, efficient code, and bringing ideas to life through technology. From Python to C++, I navigate different languages with ease, always learning, always building. My long-term vision? To build powerful systems and create tools that matter.'}
-          </p>
+              ? 'I dive into CTFs and system security with a curious, ethical mindset. I learn from the dark to protect the light.'
+              : 'I craft efficient, elegant solutions with Python, C++, C and more. Always building, always evolving.'}
+          </motion.p>
+
           <motion.a
-            href="#about"
+            href="#stacks"
             className={`bg-white bg-opacity-20 hover:bg-opacity-30 border border-white border-opacity-40 px-8 py-3 rounded-full transition-all duration-300 hover:scale-105 font-mono ${
               theme === 'dark' ? 'text-green-300 border-green-300' : 'text-gray-700 border-gray-700'
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleScrollToAbout}
+            onClick={handleScrollToStacks}
           >
             Discover More
           </motion.a>
         </div>
       </section>
-      <section
-        id="about"
-        className="py-16 bg-dark-800 text-green-300 light:bg-white light:text-gray-700 transition-all duration-300"
-      >
-        <div className="max-w-4xl mx-auto px-8">
-          <h2 className="text-3xl font-bold mb-6">A Glimpse into My Soul</h2>
-          <p className="text-lg mb-4 italic">
-            "In the moonlit nights of Mono, whispers of the past dance with the stars..."
-          </p>
-          <p className="text-lg">
-            I draw inspiration from the stories of Benin’s Mono region, where tradition and modernity intertwine. Whether I’m coding, hacking, or writing poetry, I strive to capture the essence of connection—between people, ideas, and worlds.
-          </p>
-        </div>
-      </section>
+
       <section
         id="stacks"
-        className="py-16 bg-dark-900 text-green-400 light:bg-gray-100 light:text-gray-800 transition-all duration-300"
+        className="pt-24 pb-16 bg-dark-900 text-green-400 light:bg-gray-100 light:text-gray-800 transition-all duration-300 border-t border-opacity-20 border-green-500"
       >
         <div className="max-w-4xl mx-auto px-8">
-          <h2 className="text-3xl font-bold mb-6">
+          <motion.h2
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl font-bold mb-6"
+          >
             {theme === 'dark' ? 'Cybersecurity Arsenal' : 'Development Toolkit'}
-          </h2>
+          </motion.h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {(theme === 'dark' ? cybersecStacks : devStacks).map((stack) => (
-              <div
+            {(theme === 'dark' ? cybersecStacks : devStacks).map((stack, index) => (
+              <motion.div
                 key={stack.name}
-                className="flex items-center p-4 bg-dark-800 light:bg-white rounded-md shadow-md hover:shadow-lg transition-shadow"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="flex items-center p-4 bg-dark-800 light:bg-white rounded-md shadow-md hover:shadow-lg transition-shadow space-x-4"
               >
-                <span className="text-2xl mr-3">{stack.icon}</span>
-                <span className="text-lg">{stack.name}</span>
-              </div>
+                <img src={stack.icon} alt={stack.name} className="w-8 h-8" />
+                <span className="text-lg font-mono">{stack.name}</span>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
+
       <section
         id="blog"
         className="py-16 bg-dark-800 text-green-300 light:bg-white light:text-gray-700 transition-all duration-300"
@@ -125,6 +155,7 @@ function Home() {
           </Link>
         </div>
       </section>
+
       <section
         id="contact"
         className="py-16 bg-dark-900 text-green-400 light:bg-gray-100 light:text-gray-800 transition-all duration-300"
