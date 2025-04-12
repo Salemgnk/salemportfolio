@@ -9,19 +9,26 @@ function Navbar() {
     document.body.className = theme === 'dark' ? 'light' : 'dark';
   };
 
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 flex justify-between items-center p-4 bg-dark-900 text-green-400 light:bg-white light:text-gray-800 shadow-md">
       <div className="text-xl font-bold">Cyberpoet</div>
       <ul className="flex space-x-6">
         <li>
-          <a href="#home" className="hover:underline">
+          <button onClick={() => scrollToSection('home')} className="hover:underline">
             Home
-          </a>
+          </button>
         </li>
         <li>
-          <a href="#about" className="hover:underline">
+          <button onClick={() => scrollToSection('about')} className="hover:underline">
             About
-          </a>
+          </button>
         </li>
         <li>
           <NavLink to="/projects" className="hover:underline">
@@ -34,9 +41,9 @@ function Navbar() {
           </NavLink>
         </li>
         <li>
-          <a href="#contact" className="hover:underline">
+          <button onClick={() => scrollToSection('contact')} className="hover:underline">
             Contact
-          </a>
+          </button>
         </li>
       </ul>
       <button

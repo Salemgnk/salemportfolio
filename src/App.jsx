@@ -1,8 +1,17 @@
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Projects from './pages/Projects';
+import Blog from './pages/Blog';
+import './App.css';
+
 function App() {
   return (
-    <div className="bg-gray-100 text-center p-4">
-      <h1 className="text-3xl font-bold text-green-500">Tailwind 3.0 Test</h1>
-      <p className="text-lg">If this is styled, Tailwind works!</p>
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
     </div>
   );
 }
