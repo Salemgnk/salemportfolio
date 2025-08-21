@@ -1,7 +1,32 @@
 import { Mail, Github, Linkedin, Shield, Terminal } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function HeroSection() {
-    const isDark = document.documentElement.classList.contains('dark');
+    // État local synchronisé avec le DOM
+    const [isDark, setIsDark] = useState(
+        document.documentElement.classList.contains('dark')
+    );
+
+    // Observer les changements de thème
+    useEffect(() => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    const newIsDark = document.documentElement.classList.contains('dark');
+                    setIsDark(newIsDark);
+                }
+            });
+        });
+
+        // Observer les changements de classe sur documentElement
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        // Cleanup
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <section className={`min-h-screen flex items-center justify-center transition-all duration-1000 ${
@@ -49,8 +74,8 @@ export default function HeroSection() {
                     {/* Title */}
                     <div className='space-y-6'>
                         <h1 className={`text-6xl font-bold transition-all duration-1000 ${ isDark
-                        ? "font-mono text-green-400 tracker-wider"
-                        : "font-serif text-black"
+                        ? "font-mono text-green-400 tracking-wider"
+                        : "font-serif text-gray-800"
                         }`}>
                             { 
                             isDark
@@ -64,7 +89,7 @@ export default function HeroSection() {
                                 </span>
                             )
                             : (
-                                <span className='bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent'>
+                                <span className='bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent'>
                                     Hi, I'm Salem GNANDI
                                 </span>
                             )}
@@ -80,7 +105,7 @@ export default function HeroSection() {
                                     <>
                                         <span className='text-green-400 font-bold'>[INFO]</span> Cybersecurity enthusiast and CTF competitor <br />
                                         <span className='text-green-400 font-bold'>[STATUS]</span> Currently hunting for vulnerabilities... <br />
-                                        <span className='text-green-400 font-bold'>[ALERT]</span> System compromised successfully 🎯
+                                        <span className='text-red-400 font-bold animate-pulse'>[ALERT]</span> System compromised successfully 🎯
                                     </>
                                 )
                                 :   (
@@ -98,8 +123,8 @@ export default function HeroSection() {
                     
                     <button className={`px-8 py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform ${
                         isDark
-                        ? "bg-green-400/10 text-green-400 border-green-400 hover:bg-green-400 hover:text-gray-900 hover:shadow-lg hover:shadow-green-400/20"
-                        : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50"
+                        ? "bg-green-400/10 text-green-400 border-2 border-green-400 hover:bg-green-400 hover:text-gray-900 hover:shadow-lg hover:shadow-green-400/20"
+                        : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl hover:shadow-blue-200/50"
                     }`}>
                         {isDark ? '🔓 Access Terminal' : '📬 Contact me'}
                     </button>
