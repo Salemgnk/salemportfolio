@@ -43,26 +43,25 @@ export default function ProjectsSection() {
 
   const professionalProjects = [
     {
-      title: "E-Commerce Platform",
-      category: "Full Stack",
-      description: "Modern e-commerce solution with advanced features like real-time inventory, payment processing, and analytics dashboard.",
-      technologies: ["React", "Node.js", "PostgreSQL", "Stripe"],
+      title: "Community Website",
+      category: "WordPress",
+      description: "Modern community website to promote tourism.",
+      technologies: ["WordPress", "Elementor", "Duplicator"],
       icon: Globe,
       color: "blue",
       status: "Live",
-      github: "https://github.com/yourusername/ecommerce",
-      live: "https://myecommerce.com",
+      live: "https://gimono.bj",
       image: "/api/placeholder/400/250"
     },
     {
-      title: "Mobile Banking App",
-      category: "Mobile",
-      description: "Secure banking application with biometric authentication, transaction history, and budget tracking.",
-      technologies: ["React Native", "Firebase", "Plaid API"],
-      icon: Smartphone,
+      title: "Quelques instants avant l'aube",
+      category: "Frontend",
+      description: "A website to share my poems.",
+      technologies: ["React", "Tailwind"],
+      icon: Globe,
       color: "green",
-      status: "In Development",
-      github: "https://github.com/yourusername/banking-app",
+      status: "Live",
+      live: "https://poems-zeta.vercel.app",
       image: "/api/placeholder/400/250"
     },
     {
