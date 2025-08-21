@@ -70,7 +70,39 @@ export default function HeroSection() {
                             )}
                         </h1>
 
+                        <p className={`text-xl max-w-2xl transition-all duration-1000 ${isDark 
+                            ? "font-mono text-gray-300 leading-relaxed"
+                            : "font-serif text-gray-600"
+                        }`}>
+                            {
+                                isDark
+                                ? (
+                                    <>
+                                        <span className='text-green-400 font-bold'>[INFO]</span> Cybersecurity enthusiast and CTF competitor <br />
+                                        <span className='text-green-400 font-bold'>[STATUS]</span> Currently hunting for vulnerabilities... <br />
+                                        <span className='text-green-400 font-bold'>[ALERT]</span> System compromised successfully 🎯
+                                    </>
+                                )
+                                :   (
+                                    <>
+                                        I'm a passionate software developer with a focus on building
+                                        <br />
+                                        innovative solutions and creating meaningful digital experiences.
+                                        <br />
+                                        <span className="text-blue-600 font-semibold">Always learning, always coding.</span>
+                                    </>
+                                )
+                            }
+                        </p>
                     </div>
+                    
+                    <button className={`px-8 py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform ${
+                        isDark
+                        ? "bg-green-400/10 text-green-400 border-green-400 hover:bg-green-400 hover:text-gray-900 hover:shadow-lg hover:shadow-green-400/20"
+                        : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200/50"
+                    }`}>
+                        {isDark ? '🔓 Access Terminal' : '📬 Contact me'}
+                    </button>
 
                 </div>
                 
