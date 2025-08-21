@@ -104,10 +104,48 @@ export default function HeroSection() {
                         {isDark ? '🔓 Access Terminal' : '📬 Contact me'}
                     </button>
 
-                </div>
-                
-            
+                    <div className='flex gap-6 mt-8'>
+                        <a 
+                            href="https://github.com/salem" 
+                            className={`p-3 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${
+                            isDark 
+                                ? 'bg-gray-800 text-green-400 hover:bg-green-400 hover:text-gray-900 shadow-lg shadow-green-400/10 hover:shadow-green-400/30' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white shadow-lg hover:shadow-xl'
+                            }`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="GitHub Profile"
+                        >
+                            <Github size={24} />
+                        </a>
 
+                        <a 
+                            href="https://linkedin.com/in/salem" 
+                            className={`p-3 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${
+                            isDark 
+                                ? 'bg-gray-800 text-green-400 hover:bg-green-400 hover:text-gray-900 shadow-lg shadow-green-400/10 hover:shadow-green-400/30' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white shadow-lg hover:shadow-xl'
+                            }`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="LinkedIn Profile"
+                        >
+                            <Linkedin size={24} />
+                        </a>
+
+                        <a 
+                            href="mailto:salem@example.com" 
+                            className={`p-3 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${
+                            isDark 
+                                ? 'bg-gray-800 text-green-400 hover:bg-green-400 hover:text-gray-900 shadow-lg shadow-green-400/10 hover:shadow-green-400/30' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white shadow-lg hover:shadow-xl'
+                            }`}
+                            aria-label="Send Email"
+                        >
+                            <Mail size={24} />
+                        </a>
+                    </div>
+                </div>
         </section>
     );
 }
