@@ -57,7 +57,7 @@ export default function ProjectsSection() {
       title: "Quelques instants avant l'aube",
       category: "Frontend",
       description: "A website to share my poems.",
-      technologies: ["React", "Tailwind"],
+      technologies: ["React", "Tailwind", "Vercel"],
       icon: Globe,
       color: "green",
       status: "Live",
@@ -65,34 +65,34 @@ export default function ProjectsSection() {
       image: "/api/placeholder/400/250"
     },
     {
-      title: "Analytics Dashboard",
-      category: "Frontend",
-      description: "Real-time data visualization dashboard for business intelligence with interactive charts and reports.",
-      technologies: ["React", "D3.js", "TypeScript", "Tailwind"],
+      title: "42sh",
+      category: "Shell Development",
+      description: "Implementation of a linux shell based on TCSH",
+      technologies: ["C", "Makefile"],
       icon: Code2,
       color: "purple",
       status: "Live",
       github: "https://github.com/yourusername/analytics",
-      live: "https://analytics-dash.com",
+      live: null,
       image: "/api/placeholder/400/250"
     },
     {
-      title: "DevOps Pipeline",
-      category: "Infrastructure",
+      title: "myMarvin",
+      category: "DevOps",
       description: "Automated CI/CD pipeline with Docker containers, monitoring, and deployment strategies.",
-      technologies: ["Docker", "Jenkins", "AWS", "Terraform"],
+      technologies: ["Docker", "Jenkins"],
       icon: Database,
       color: "orange",
       status: "Live",
-      github: "https://github.com/yourusername/devops-pipeline",
+      // github: "https://github.com/yourusername/devops-pipeline",
       image: "/api/placeholder/400/250"
     }
   ];
 
   const hackerProjects = [
     {
-      title: "Web Vulnerability Scanner",
-      category: "Offensive Security",
+      title: "Intro to CyberSecurity",
+      category: "Certification",
       description: "// Automated scanner for detecting common web vulnerabilities including XSS, SQLi, and CSRF",
       technologies: ["Python", "Selenium", "BeautifulSoup", "SQLAlchemy"],
       icon: Target,
@@ -101,7 +101,7 @@ export default function ProjectsSection() {
       github: null,
       live: null,
       image: "/api/placeholder/400/250",
-      warning: "Educational purposes only"
+      // warning: "Educational purposes only"
     },
     {
       title: "Network Recon Tool",
