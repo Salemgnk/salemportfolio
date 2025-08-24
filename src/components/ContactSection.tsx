@@ -40,9 +40,9 @@ export default function ContactSection() {
   // Ref pour reCAPTCHA
   const recaptchaRef = useRef<HTMLDivElement>(null);
 
-  const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-  const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-  const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+  const EMAILJS_SERVICE_ID = "service_6oq0y6s";
+  const EMAILJS_TEMPLATE_ID = "template_w2fxfh8";
+  const EMAILJS_PUBLIC_KEY = "3kZ4Hi3V6-58FEFKJ";
 
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
@@ -100,7 +100,7 @@ export default function ContactSection() {
     window.grecaptcha.render(
         recaptchaRef.current as HTMLDivElement,
         {
-            sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY as string,
+            sitekey: "6Lcs2rArAAAAANf_zT7Lq4YGmLQsta1fLl6-ngJj",
             theme: isDark ? 'dark' : 'light',
             callback: (token: string) => {
                 setRecaptchaToken(token);
