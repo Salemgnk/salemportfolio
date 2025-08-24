@@ -6,7 +6,6 @@ export default function HeroSection() {
         document.documentElement.classList.contains('dark')
     );
     
-    const [hasScrambled, setHasScrambled] = useState(false);
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
 
@@ -29,13 +28,7 @@ export default function HeroSection() {
         });
 
         return () => observer.disconnect();
-    }, [isDark, hasScrambled]);
-
-    // Fonction pour gérer le hover scrambling sur les boutons
-    const handleButtonScramble = (e, originalText) => {
-        if (!isDark) return;
-        scrambleText(e.target, originalText, 1000);
-    };
+    }, [isDark]);
 
     return (
         <section className={`min-h-screen flex items-center justify-center transition-all duration-1000 ${
@@ -137,7 +130,6 @@ export default function HeroSection() {
                         ? "bg-green-400/10 text-green-400 border-2 border-green-400 hover:bg-green-400 hover:text-gray-900 hover:shadow-lg hover:shadow-green-400/20"
                         : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl hover:shadow-blue-200/50"
                     }`}
-                    onMouseEnter={(e) => handleButtonScramble(e, isDark ? '🔓 Access Terminal' : '📬 Contact me')}
                 >
                     {isDark ? '🔓 Access Terminal' : '📬 Contact me'}
                 </button>
@@ -148,7 +140,6 @@ export default function HeroSection() {
                         ? "bg-red-500/10 text-red-400 border-2 border-red-400 hover:bg-red-400 hover:text-gray-900 hover:shadow-lg hover:shadow-red-400/20"
                         : "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl hover:shadow-green-200/50"
                     }`}
-                    onMouseEnter={(e) => handleButtonScramble(e, isDark ? '📥 Download CV' : '📥 Download CV')}
                     onClick={() => {
                         // Ici tu peux ajouter le lien vers ton CV
                         const link = document.createElement('a');

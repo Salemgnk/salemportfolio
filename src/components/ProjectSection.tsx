@@ -3,7 +3,6 @@ import {
   ExternalLink, 
   Github, 
   Code2, 
-  Smartphone, 
   Globe, 
   Database, 
   Shield, 
@@ -41,7 +40,7 @@ export default function ProjectsSection() {
     };
   }, []);
 
-  const professionalProjects = [
+  const professionalProjects: ProjectType[] = [
     {
       title: "Community Website",
       category: "WordPress",
