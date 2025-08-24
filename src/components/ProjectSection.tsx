@@ -1,19 +1,24 @@
 import { useState, useEffect } from "react";
 import { 
-  ExternalLink, 
-  Github, 
-  Code2, 
-  Globe, 
-  Database, 
-  Shield, 
-  Terminal, 
-  Zap, 
-  Eye, 
-  Lock,
-  AlertTriangle,
-  Skull,
-  Target
+  ExternalLink, Github, Code2, Globe, Database, Shield, Terminal, Zap, Eye, Lock,
+  AlertTriangle, Skull, Target
 } from "lucide-react";
+
+type ProjectColor = 'red' | 'green' | 'purple' | 'yellow' | 'blue' | 'orange';
+type ProjectStatus = 'Live' | 'In Development' | '[CLASSIFIED]' | '[ACTIVE]' | '[RESEARCH]' | '[DEPLOYED]';
+type ProjectType = {
+  title: string;
+  category: string;
+  description: string;
+  technologies: string[];
+  icon: React.ElementType;
+  color: ProjectColor;
+  status: ProjectStatus;
+  github?: string | null;
+  live?: string | null;
+  image: string;
+  warning?: string;
+};
 
 export default function ProjectsSection() {
   const [isDark, setIsDark] = useState(
@@ -35,10 +40,18 @@ export default function ProjectsSection() {
       attributeFilter: ['class']
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
+
+  // ---------------- MAPPING POUR TAILWIND ----------------
+  const bgColorClasses: Record<ProjectColor, string> = {
+    blue: 'bg-blue-100 text-blue-600 border border-blue-200',
+    green: 'bg-green-100 text-green-600 border border-green-200',
+    purple: 'bg-purple-100 text-purple-600 border border-purple-200',
+    orange: 'bg-orange-100 text-orange-600 border border-orange-200',
+    red: 'bg-red-100 text-red-600 border border-red-200',
+    yellow: 'bg-yellow-100 text-yellow-600 border border-yellow-200',
+  };
 
   const professionalProjects: ProjectType[] = [
     {
@@ -83,12 +96,11 @@ export default function ProjectsSection() {
       icon: Database,
       color: "orange",
       status: "Live",
-      // github: "https://github.com/yourusername/devops-pipeline",
       image: "/api/placeholder/400/250"
     }
   ];
 
-  const hackerProjects = [
+  const hackerProjects: ProjectType[] = [
     {
       title: "Intro to CyberSecurity",
       category: "Certification",
@@ -99,8 +111,7 @@ export default function ProjectsSection() {
       status: "[CLASSIFIED]",
       github: null,
       live: null,
-      image: "/api/placeholder/400/250",
-      // warning: "Educational purposes only"
+      image: "/api/placeholder/400/250"
     },
     {
       title: "Network Recon Tool",
@@ -125,8 +136,7 @@ export default function ProjectsSection() {
       status: "[RESEARCH]",
       github: null,
       live: null,
-      image: "/api/placeholder/400/250",
-      warning: "Research environment only"
+      image: "/api/placeholder/400/250"
     },
     {
       title: "Forensics Framework",
@@ -138,28 +148,33 @@ export default function ProjectsSection() {
       status: "[DEPLOYED]",
       github: null,
       live: null,
-      image: "/api/placeholder/400/250",
-      warning: "Law enforcement use"
+      image: "/api/placeholder/400/250"
     }
   ];
 
-  type ProjectColor = 'red' | 'green' | 'purple' | 'yellow' | 'blue' | 'orange';
-  type ProjectType = {
-    title: string;
-    category: string;
-    description: string;
-    technologies: string[];
-    icon: React.ElementType;
-    color: ProjectColor;
-    status: string;
-    github?: string | null;
-    live?: string | null;
-    image: string;
-    warning?: string;
-  };
-
+  // ---------------- COLORS ----------------
   const ProjectCard = ({ project, index }: { project: ProjectType; index: number }) => {
-    const colorClasses: Record<ProjectColor, string> = isDark
+    const Icon = project.icon;
+
+    const statusColorClasses: Record<ProjectStatus, string> = isDark
+      ? {
+        "Live": "text-green-400",
+        "In Development": "text-yellow-400",
+        "[CLASSIFIED]": "text-red-400 animate-pulse",
+        "[ACTIVE]": "text-green-400 animate-pulse",
+        "[RESEARCH]": "text-purple-400",
+        "[DEPLOYED]": "text-blue-400",
+      }
+      : {
+        "Live": "text-green-600",
+        "In Development": "text-yellow-600",
+        "[CLASSIFIED]": "text-red-600",
+        "[ACTIVE]": "text-green-600",
+        "[RESEARCH]": "text-purple-600",
+        "[DEPLOYED]": "text-blue-600",
+      };
+
+    const colorClasses = isDark
       ? {
         red: "border-red-400/30 hover:border-red-400/60 bg-gray-800/50",
         green: "border-green-400/30 hover:border-green-400/60 bg-gray-800/50",
@@ -195,41 +210,16 @@ export default function ProjectsSection() {
         yellow: "text-yellow-600",
       };
 
-    const statusColorClasses = isDark
-      ? {
-        "Live": "text-green-400",
-        "In Development": "text-yellow-400",
-        "[CLASSIFIED]": "text-red-400 animate-pulse",
-        "[ACTIVE]": "text-green-400 animate-pulse",
-        "[RESEARCH]": "text-purple-400",
-        "[DEPLOYED]": "text-blue-400",
-      }
-      : {
-        "Live": "text-green-600",
-        "In Development": "text-yellow-600",
-        "[CLASSIFIED]": "text-red-600",
-        "[ACTIVE]": "text-green-600",
-        "[RESEARCH]": "text-purple-600",
-        "[DEPLOYED]": "text-blue-600",
-      };
-
-    const Icon = project.icon;
-
     return (
       <div
-        className={`group rounded-xl border-2 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${
-          colorClasses[project.color]
-        } ${isDark ? 'hover:shadow-green-400/10' : 'hover:shadow-gray-200/50'}`}
+        className={`group rounded-xl border-2 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${colorClasses[project.color]} ${isDark ? 'hover:shadow-green-400/10' : 'hover:shadow-gray-200/50'}`}
         style={{ 
           animationDelay: `${index * 200}ms`,
           opacity: 0,
           animation: 'fadeInUp 0.8s ease-out forwards'
         }}
       >
-        {/* Image placeholder */}
-        <div className={`h-48 relative overflow-hidden ${
-          isDark ? 'bg-gray-700' : 'bg-gray-100'
-        }`}>
+        <div className={`h-48 relative overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
           <div className="absolute inset-0 flex items-center justify-center">
             <Icon size={48} className={`${iconColorClasses[project.color]} opacity-50`} />
           </div>
@@ -240,30 +230,21 @@ export default function ProjectsSection() {
           )}
         </div>
 
-        {/* Contenu */}
         <div className="p-6">
-          {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className={`text-xl font-bold mb-1 ${
-                isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'
-              }`}>
+              <h3 className={`text-xl font-bold mb-1 ${isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'}`}>
                 {project.title}
               </h3>
-              <span className={`text-sm px-2 py-1 rounded ${
-                isDark
-                  ? 'bg-gray-700 text-gray-300 font-mono'
-                  : 'bg-gray-100 text-gray-600 font-medium'
-              }`}>
+              <span className={`text-sm px-2 py-1 rounded ${isDark ? 'bg-gray-700 text-gray-300 font-mono' : 'bg-gray-100 text-gray-600 font-medium'}`}>
                 {project.category}
               </span>
+              <span className={`text-sm font-mono ${statusColorClasses[project.status] ?? 'text-gray-500'}`}>
+                {project.status}
+              </span>
             </div>
-            <span className={`text-sm font-mono ${statusColorClasses[project.status] || 'text-gray-500'}`}>
-              {project.status}
-            </span>
           </div>
 
-          {/* Warning (mode hacker uniquement) */}
           {isDark && project.warning && (
             <div className="mb-3 p-2 border border-red-400/30 rounded bg-red-400/5">
               <p className="text-xs text-red-400 font-mono">
@@ -272,23 +253,15 @@ export default function ProjectsSection() {
             </div>
           )}
 
-          {/* Description */}
-          <p className={`text-sm mb-4 leading-relaxed ${
-            isDark ? 'font-mono text-gray-400' : 'text-gray-600'
-          }`}>
+          <p className={`text-sm mb-4 leading-relaxed ${isDark ? 'font-mono text-gray-400' : 'text-gray-600'}`}>
             {project.description}
           </p>
 
-          {/* Technologies */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {project.technologies.map((tech, techIndex) => (
+            {project.technologies.map((tech: string, techIndex: number) => (
               <span
                 key={tech}
-                className={`px-2 py-1 text-xs rounded-full transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                    : `bg-${project.color}-100 text-${project.color}-600 border border-${project.color}-200`
-                }`}
+                className={`px-2 py-1 text-xs rounded-full transition-all duration-300 hover:scale-105 ${bgColorClasses[project.color]}`}
                 style={{
                   animationDelay: `${(index * 200) + (techIndex * 100)}ms`,
                   opacity: 0,
@@ -300,16 +273,11 @@ export default function ProjectsSection() {
             ))}
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3">
             {project.github && (
               <a
                 href={project.github}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'border-gray-600 text-gray-300 hover:border-green-400 hover:text-green-400'
-                    : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600'
-                }`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-300 hover:scale-105 ${isDark ? 'border-gray-600 text-gray-300 hover:border-green-400 hover:text-green-400' : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600'}`}
               >
                 <Github size={16} />
                 <span className="text-sm font-medium">Code</span>
@@ -318,18 +286,14 @@ export default function ProjectsSection() {
             {project.live && (
               <a
                 href={project.live}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-green-400/20'
-                    : `bg-${project.color}-100 text-${project.color}-600 border border-${project.color}-200 hover:bg-${project.color}-200`
-                }`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 ${isDark ? 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-green-400/20' : bgColorClasses[project.color]}`}
               >
                 <ExternalLink size={16} />
                 <span className="text-sm font-medium">Live</span>
               </a>
             )}
             {isDark && !project.github && !project.live && (
-              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border border-red-400/30 text-red-400`}>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-red-400/30 text-red-400">
                 <Lock size={16} />
                 <span className="text-sm font-mono">Restricted</span>
               </div>
@@ -344,37 +308,15 @@ export default function ProjectsSection() {
 
   return (
     <>
-      {/* Styles CSS pour les animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
-      <section id="projects" className={`py-20 transition-all duration-1000 ${
-        isDark ? 'bg-gray-900' : 'bg-white'
-      }`}>
+      <section id="projects" className={`py-20 transition-all duration-1000 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
         <div className="container mx-auto px-8">
-          
-          {/* Titre principal */}
           <div className="text-center mb-16">
-            <h2 className={`text-5xl font-bold mb-4 transition-all duration-1000 ${
-              isDark 
-                ? 'font-mono text-green-400' 
-                : 'font-serif text-gray-800'
-            }`}>
+            <h2 className={`text-5xl font-bold mb-4 transition-all duration-1000 ${isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'}`}>
               {isDark ? (
                 <span className="flex items-center justify-center gap-4">
                   <Terminal className="animate-pulse" />
@@ -386,11 +328,7 @@ export default function ProjectsSection() {
               )}
             </h2>
             
-            <p className={`text-xl max-w-2xl mx-auto transition-all duration-1000 ${
-              isDark 
-                ? 'font-mono text-gray-300' 
-                : 'font-serif text-gray-600'
-            }`}>
+            <p className={`text-xl max-w-2xl mx-auto transition-all duration-1000 ${isDark ? 'font-mono text-gray-300' : 'font-serif text-gray-600'}`}>
               {isDark ? (
                 <>
                   <span className="text-green-400">[ACCESS_LEVEL: RESTRICTED]</span>
@@ -403,37 +341,21 @@ export default function ProjectsSection() {
             </p>
           </div>
 
-          {/* Grille des projets */}
-          <div className={`grid gap-8 max-w-7xl mx-auto ${
-            currentProjects.length === 2 
-              ? 'grid-cols-1 md:grid-cols-2 max-w-5xl' 
-              : 'grid-cols-1 md:grid-cols-2'
-          }`}>
+          <div className={`grid gap-8 max-w-7xl mx-auto ${currentProjects.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-5xl' : 'grid-cols-1 md:grid-cols-2'}`}>
             {currentProjects.map((project, index) => (
-              <ProjectCard 
-                key={project.title} 
-                project={project} 
-                index={index}
-              />
+              <ProjectCard key={project.title} project={project} index={index} />
             ))}
           </div>
 
-          {/* Call to Action */}
           <div className="mt-16 text-center">
-            <div className={`inline-block px-8 py-4 rounded-lg border transition-all duration-1000 ${
-              isDark 
-                ? 'bg-gray-800/50 border-green-400/30 text-green-400 font-mono' 
-                : 'bg-gray-50 border-blue-200 text-blue-600 font-serif'
-            }`}>
+            <div className={`inline-block px-8 py-4 rounded-lg border transition-all duration-1000 ${isDark ? 'bg-gray-800/50 border-green-400/30 text-green-400 font-mono' : 'bg-gray-50 border-blue-200 text-blue-600 font-serif'}`}>
               {isDark ? (
                 <span>
                   <AlertTriangle className="inline mr-2" size={16} />
                   [NOTICE] More classified projects available upon clearance
                 </span>
               ) : (
-                <span>
-                  🚀 More exciting projects coming soon - Stay tuned!
-                </span>
+                <span>🚀 More exciting projects coming soon - Stay tuned!</span>
               )}
             </div>
           </div>

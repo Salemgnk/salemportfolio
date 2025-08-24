@@ -107,8 +107,8 @@ export default function ToolsSection() {
     return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
   };
 
-  // Fonction pour déterminer si la dernière rangée doit être centrée
-  const getLastRowClasses = (index, total) => {
+
+  const getLastRowClasses = (index: number, total: number): string => {
     // Pour 4 éléments en grille 2x2, pas besoin de classes spéciales
     if (total === 4) return "";
     
@@ -247,7 +247,7 @@ export default function ToolsSection() {
   return (
     <>
       {/* Styles CSS pour les animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
