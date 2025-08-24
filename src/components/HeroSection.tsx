@@ -1,5 +1,6 @@
 import { Mail, Github, Linkedin, Shield, Terminal, Download } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import photo from '../assets/salem.jpeg'
 
 export default function HeroSection() {
     const [isDark, setIsDark] = useState(
@@ -43,7 +44,7 @@ export default function HeroSection() {
                         "ring-4 ring-blue-300 shadow-2xl shadow-blue-200/50"
                 }`}>
                     <img
-                        src="/src/assets/salem.jpeg"
+                        src={photo}
                         alt={isDark ? "Scorpi777" : "Salem GNANDI"}
                         className="w-full h-full object-cover object-top"
                         onError={(e) => {
