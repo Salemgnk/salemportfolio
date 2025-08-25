@@ -11,15 +11,11 @@ import {
   Zap
 } from "lucide-react";
 
-// TypeScript declaration for grecaptcha
-declare global {
-  interface Window {
-    grecaptcha?: any;
-    emailjs?: any;
-  }
-}
+import ReCAPTCHA from "react-google-recaptcha";
+import emailjs from "emailjs-com";
 
 export default function ContactSection() {
+  // Synchronisation avec le système de thème global (comme dans les autres composants)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
   );
@@ -33,18 +29,22 @@ export default function ContactSection() {
 
   // États de soumission
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null); // 'success' | 'error' | null
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   
   // Ref pour reCAPTCHA
-  const recaptchaRef = useRef<HTMLDivElement>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const EMAILJS_SERVICE_ID = "service_6oq0y6s";
   const EMAILJS_TEMPLATE_ID = "template_w2fxfh8";
   const EMAILJS_PUBLIC_KEY = "3kZ4Hi3V6-58FEFKJ";
 
   useEffect(() => {
+    // Initialiser EmailJS
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    // Observer les changements de thème global (comme dans les autres composants)
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "class") {
@@ -59,73 +59,10 @@ export default function ContactSection() {
       attributeFilter: ['class']
     });
 
-    // Charger le script reCAPTCHA
-    loadRecaptchaScript();
-
     return () => {
       observer.disconnect();
     };
   }, []);
-
-  // Charger le script Google reCAPTCHA
-  const loadRecaptchaScript = () => {
-    if (window.grecaptcha) {
-      renderRecaptcha();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      renderRecaptcha();
-    };
-    document.head.appendChild(script);
-  };
-
-  // Rendre le widget reCAPTCHA
-  const renderRecaptcha = () => {
-    if (window.grecaptcha && recaptchaRef.current) {
-      // Nettoyer le widget existant
-      recaptchaRef.current.innerHTML = '';
-      
-    interface RecaptchaRenderOptions {
-        sitekey: string;
-        theme: 'light' | 'dark';
-        callback: (token: string) => void;
-        'expired-callback': () => void;
-    }
-
-    window.grecaptcha.render(
-        recaptchaRef.current as HTMLDivElement,
-        {
-            sitekey: "6Lcs2rArAAAAANf_zT7Lq4YGmLQsta1fLl6-ngJj",
-            theme: isDark ? 'dark' : 'light',
-            callback: (token: string) => {
-                setRecaptchaToken(token);
-                // Effacer l'erreur reCAPTCHA si elle existe
-                if (errors.recaptcha) {
-                    setErrors((prev: Record<string, string>) => ({
-                        ...prev,
-                        recaptcha: ''
-                    }));
-                }
-            },
-            'expired-callback': () => {
-                setRecaptchaToken(null);
-            }
-        } as RecaptchaRenderOptions
-    );
-    }
-  };
-
-  // Re-rendre reCAPTCHA quand le thème change
-  useEffect(() => {
-    if (window.grecaptcha && recaptchaRef.current) {
-      setTimeout(() => renderRecaptcha(), 100);
-    }
-  }, [isDark]);
 
   // Gérer les changements du formulaire
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
@@ -140,6 +77,17 @@ export default function ContactSection() {
       setErrors(prev => ({
         ...prev,
         [name]: ''
+      }));
+    }
+  };
+
+  // Gérer le reCAPTCHA
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+    if (token && errors.recaptcha) {
+      setErrors(prev => ({
+        ...prev,
+        recaptcha: ''
       }));
     }
   };
@@ -182,17 +130,6 @@ export default function ContactSection() {
     setSubmitStatus(null);
 
     try {
-      // Charger EmailJS si pas encore fait
-      if (!window.emailjs) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-        await new Promise((resolve) => {
-          script.onload = resolve;
-          document.head.appendChild(script);
-        });
-        window.emailjs.init(EMAILJS_PUBLIC_KEY);
-      }
-
       // Préparer les données du template
       const templateParams = {
         from_name: formData.name,
@@ -203,7 +140,7 @@ export default function ContactSection() {
       };
 
       // Envoyer l'email via EmailJS
-      await window.emailjs.send(
+      await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         templateParams
@@ -214,8 +151,8 @@ export default function ContactSection() {
       setRecaptchaToken(null);
       
       // Reset reCAPTCHA
-      if (window.grecaptcha) {
-        window.grecaptcha.reset();
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
       }
       
     } catch (error) {
@@ -247,15 +184,46 @@ export default function ContactSection() {
           75% { transform: translateX(5px); }
         }
 
-        /* Styles pour reCAPTCHA en mode sombre */
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        /* Styles pour reCAPTCHA */
         .recaptcha-container {
           display: flex;
           justify-content: center;
+          min-height: 78px;
+          align-items: center;
+        }
+
+        /* Amélioration visuelle du reCAPTCHA container */
+        .recaptcha-wrapper {
+          border: 1px solid transparent;
+          border-radius: 8px;
+          padding: 8px;
+          transition: all 0.3s ease;
+        }
+
+        .recaptcha-wrapper.dark {
+          background: rgba(31, 41, 55, 0.5);
+          border-color: rgba(34, 197, 94, 0.2);
+        }
+
+        .recaptcha-wrapper.light {
+          background: rgba(248, 250, 252, 0.8);
+          border-color: rgba(59, 130, 246, 0.2);
         }
       `}</style>
 
-      <section id="contact" className={`py-20 transition-all duration-1000 ${
-        isDark ? 'bg-gray-900' : 'bg-white'
+      {/* Suppression du bouton toggle et de la div avec background fixe */}
+      <section id="contact" className={`py-20 min-h-screen transition-all duration-1000 ${
+        isDark ? 'bg-gray-900' : 'bg-gradient-to-br from-slate-50 to-blue-50'
       }`}>
         <div className="container mx-auto px-8 max-w-4xl">
           
@@ -443,7 +411,14 @@ export default function ContactSection() {
                 </label>
                 
                 <div className="recaptcha-container">
-                  <div ref={recaptchaRef}></div>
+                  <div className={`recaptcha-wrapper ${isDark ? 'dark' : 'light'}`}>
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey="6Lcs2rArAAAAANf_zT7Lq4YGmLQsta1fLl6-ngJj"
+                      theme={isDark ? 'dark' : 'light'}
+                      onChange={handleRecaptchaChange}
+                    />
+                  </div>
                 </div>
                 
                 {errors.recaptcha && (
