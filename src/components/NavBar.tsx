@@ -49,19 +49,6 @@ export default function NavBar() {
 
       {/* === Middle : Menu === */}
       <div className="hidden md:flex items-center gap-6">
-        <a
-          href="#about"
-          className={`relative transition-all duration-300 hover:scale-105 group ${
-            isDark ? "text-gray-300 hover:text-green-400" : "text-gray-700 hover:text-blue-600"
-          }`}
-        >
-          {isDark ? "Profile" : "About"}
-          <span
-            className={`absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
-              isDark ? "bg-green-400" : "bg-blue-600"
-            }`}
-          ></span>
-        </a>
 
         <a
           href="#skills"

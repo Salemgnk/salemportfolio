@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   ExternalLink, Github, Code2, Globe, Database, Shield, Terminal, Zap, Eye, Lock,
-  AlertTriangle, Skull, Target
+  AlertTriangle, Skull, Target, AppWindow
 } from "lucide-react";
 
 type ProjectColor = 'red' | 'green' | 'purple' | 'yellow' | 'blue' | 'orange';
@@ -13,7 +13,7 @@ type ProjectType = {
   technologies: string[];
   icon: React.ElementType;
   color: ProjectColor;
-  status: ProjectStatus;
+  status: ProjectStatus | null;
   github?: string | null;
   live?: string | null;
   image: string;
@@ -97,6 +97,16 @@ export default function ProjectsSection() {
       color: "orange",
       status: "Live",
       image: "/api/placeholder/400/250"
+    },
+    {
+      title: "Cloud Forest",
+      category: "Software Engineering",
+      description: "Implementation of a text editor for code",
+      technologies: ["C++", "Cmake", "Makefile", "C", "Python", "GTK"],
+      icon: AppWindow,
+      color: "orange",
+      status: "Live",
+      image: "/api/placeholder/400/250"
     }
   ];
 
@@ -104,52 +114,28 @@ export default function ProjectsSection() {
     {
       title: "Intro to CyberSecurity",
       category: "Certification",
-      description: "// Automated scanner for detecting common web vulnerabilities including XSS, SQLi, and CSRF",
-      technologies: ["Python", "Selenium", "BeautifulSoup", "SQLAlchemy"],
+      description: "// Cisco certification preparation course",
+      technologies: ["Network Fundamentals"],
       icon: Target,
       color: "red",
-      status: "[CLASSIFIED]",
+      status: null,
       github: null,
       live: null,
       image: "/api/placeholder/400/250"
     },
     {
-      title: "Network Recon Tool",
-      category: "Network Analysis",
-      description: "// Advanced network reconnaissance and enumeration toolkit with stealth capabilities",
-      technologies: ["Python", "Scapy", "Nmap", "Wireshark"],
+      title: "Hackerlab",
+      category: "CTF",
+      description: "// 8e place out of 20 at Hackerlab, Benin national cybersecurity competition",
+      technologies: ["Python", "Hydra", "Wireshark", "Ghidra"],
       icon: Eye,
       color: "green",
-      status: "[ACTIVE]",
+      status: null,
       github: null,
       live: null,
       image: "/api/placeholder/400/250",
-      warning: "Authorized testing only"
     },
-    {
-      title: "Binary Exploitation Kit",
-      category: "Reverse Engineering",
-      description: "// Collection of tools for buffer overflow exploitation and binary analysis",
-      technologies: ["C", "Assembly", "GDB", "Ghidra"],
-      icon: Skull,
-      color: "purple",
-      status: "[RESEARCH]",
-      github: null,
-      live: null,
-      image: "/api/placeholder/400/250"
-    },
-    {
-      title: "Forensics Framework",
-      category: "Digital Forensics",
-      description: "// Memory analysis and artifact extraction framework for incident response",
-      technologies: ["Python", "Volatility", "Yara", "Autopsy"],
-      icon: Shield,
-      color: "yellow",
-      status: "[DEPLOYED]",
-      github: null,
-      live: null,
-      image: "/api/placeholder/400/250"
-    }
+
   ];
 
   // ---------------- COLORS ----------------
@@ -212,7 +198,8 @@ export default function ProjectsSection() {
 
     return (
       <div
-        className={`group rounded-xl border-2 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${colorClasses[project.color]} ${isDark ? 'hover:shadow-green-400/10' : 'hover:shadow-gray-200/50'}`}
+        className={`group rounded-xl border-2 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl
+          ${colorClasses[project.color]} ${isDark ? 'hover:shadow-green-400/10' : 'hover:shadow-gray-200/50'}`}
         style={{ 
           animationDelay: `${index * 200}ms`,
           opacity: 0,
