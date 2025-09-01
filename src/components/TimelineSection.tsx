@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text, Html } from '@react-three/drei';
+import { OrbitControls, Html, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 import { Calendar, Award, Briefcase, Trophy, GraduationCap, Shield, Target } from 'lucide-react';
 
@@ -70,169 +70,328 @@ const timelineData: TimelineEvent[] = [
   }
 ];
 
-// Composant pour une particule flottante
-function FloatingParticle({ position, isDark }: { position: [number, number, number], isDark: boolean }) {
+// Shader pour effet cyberpunk
+const CyberpunkMaterial = ({ color, isDark }: { color: string, isDark: boolean }) => {
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  
+  useFrame((state) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    }
+  });
+
+  const vertexShader = `
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    uniform float uTime;
+    
+    void main() {
+      vPosition = position;
+      vNormal = normal;
+      
+      vec3 pos = position;
+      // Effet de pulsation
+      pos += normal * sin(uTime * 2.0 + position.x * 10.0) * 0.02;
+      
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    uniform float uTime;
+    uniform vec3 uColor;
+    uniform bool uIsDark;
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    
+    void main() {
+      vec3 color = uColor;
+      
+      if (uIsDark) {
+        // Mode cyberpunk
+        float scanline = sin(vPosition.y * 50.0 + uTime * 5.0) * 0.1 + 0.9;
+        color *= scanline;
+        
+        // Effet de grille
+        float grid = sin(vPosition.x * 30.0) * sin(vPosition.z * 30.0);
+        color += vec3(0.0, 1.0, 0.4) * grid * 0.1;
+        
+        // Glow effect
+        float fresnel = pow(1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+        color += vec3(0.0, 1.0, 0.2) * fresnel * 0.5;
+      } else {
+        // Mode cristallin élégant
+        float fresnel = pow(1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+        color = mix(color, vec3(1.0), fresnel * 0.3);
+      }
+      
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  return (
+    <shaderMaterial
+      ref={materialRef}
+      vertexShader={vertexShader}
+      fragmentShader={fragmentShader}
+      uniforms={{
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(color) },
+        uIsDark: { value: isDark }
+      }}
+    />
+  );
+};
+
+// Particule qui voyage le long de la courbe
+function TravelingParticle({ curve, isDark }: { curve: THREE.CatmullRomCurve3, isDark: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.1;
-      meshRef.current.rotation.y += 0.01;
+    if (meshRef.current && curve) {
+      const t = (Math.sin(state.clock.elapsedTime * 0.5) + 1) / 2;
+      const point = curve.getPoint(t);
+      meshRef.current.position.copy(point);
+      
+      // Trail effect
+      meshRef.current.material.opacity = Math.sin(state.clock.elapsedTime * 2) * 0.5 + 0.5;
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.02, 8, 8]} />
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[0.05, 8, 8]} />
       <meshBasicMaterial 
-        color={isDark ? '#22c55e' : '#3b82f6'} 
-        opacity={0.6} 
+        color={isDark ? '#00ff41' : '#3b82f6'} 
         transparent 
+        opacity={0.8}
       />
     </mesh>
   );
 }
 
-// Composant pour la courbe de connexion
-function ConnectionCurve({ points, isDark }: { points: THREE.Vector3[], isDark: boolean }) {
-  const curve = new THREE.CatmullRomCurve3(points);
-  const curvePoints = curve.getPoints(50);
+// Connexion lightning entre points
+function LightningConnection({ start, end, isDark }: { 
+  start: [number, number, number], 
+  end: [number, number, number], 
+  isDark: boolean 
+}) {
+  const lineRef = useRef<THREE.Line>(null);
   
+  useFrame((state) => {
+    if (lineRef.current && isDark) {
+      // Animation de l'intensité du lightning
+      const material = lineRef.current.material as THREE.LineBasicMaterial;
+      material.opacity = Math.sin(state.clock.elapsedTime * 3) * 0.3 + 0.7;
+    }
+  });
+
+  // Génère une ligne avec des perturbations pour effet lightning
+  const points = [];
+  const startVec = new THREE.Vector3(...start);
+  const endVec = new THREE.Vector3(...end);
+  const segments = 20;
+  
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const point = startVec.clone().lerp(endVec, t);
+    
+    // Ajoute des perturbations aléatoires
+    if (i > 0 && i < segments) {
+      point.x += (Math.random() - 0.5) * 0.2;
+      point.y += (Math.random() - 0.5) * 0.2;
+      point.z += (Math.random() - 0.5) * 0.2;
+    }
+    
+    points.push(point);
+  }
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
   return (
-    <line>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={curvePoints.length}
-          array={new Float32Array(curvePoints.flatMap(p => [p.x, p.y, p.z]))}
-          itemSize={3} args={[]}        />
-      </bufferGeometry>
+    <line ref={lineRef} geometry={geometry}>
       <lineBasicMaterial 
-        color={isDark ? '#22c55e' : '#3b82f6'} 
-        linewidth={3}
-        opacity={0.8}
+        color={isDark ? '#00ff41' : '#3b82f6'} 
+        opacity={isDark ? 0.7 : 0.5}
         transparent
       />
     </line>
   );
 }
 
-// Composant pour un point de timeline
-function TimelinePoint({ event, isDark, onHover }: { 
-  event: TimelineEvent, 
-  isDark: boolean,
-  onHover: (event: TimelineEvent | null) => void 
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
-
+// Grille cyberpunk en arrière-plan
+function CyberpunkGrid({ isDark }: { isDark: boolean }) {
+  if (!isDark) return null;
+  
+  const gridRef = useRef<THREE.Group>(null);
+  
   useFrame((state) => {
-    if (meshRef.current) {
-      const scale = hovered ? 1.2 : 1;
-      meshRef.current.scale.setScalar(scale);
-      meshRef.current.rotation.y += 0.02;
+    if (gridRef.current) {
+      gridRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
     }
   });
 
-  const baseColor = isDark ? event.color : event.color;
+  const lines = [];
+  const gridSize = 20;
+  const gridSpacing = 0.5;
   
+  // Lignes horizontales
+  for (let i = -gridSize; i <= gridSize; i++) {
+    const points = [
+      new THREE.Vector3(-gridSize * gridSpacing, -2, i * gridSpacing),
+      new THREE.Vector3(gridSize * gridSpacing, -2, i * gridSpacing)
+    ];
+    lines.push(points);
+  }
+  
+  // Lignes verticales
+  for (let i = -gridSize; i <= gridSize; i++) {
+    const points = [
+      new THREE.Vector3(i * gridSpacing, -2, -gridSize * gridSpacing),
+      new THREE.Vector3(i * gridSpacing, -2, gridSize * gridSpacing)
+    ];
+    lines.push(points);
+  }
+
   return (
-    <group position={event.position}>
-      <mesh
-        ref={meshRef}
-        onPointerEnter={() => {
-          setHovered(true);
-          onHover(event);
-        }}
-        onPointerLeave={() => {
-          setHovered(false);
-          onHover(null);
-        }}
-      >
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial 
-          color={baseColor}
-          emissive={baseColor}
-          emissiveIntensity={isDark ? 0.3 : 0.1}
-        />
-      </mesh>
-      
-      {/* Glow effect pour le mode dark */}
-      {isDark && (
-        <mesh position={[0, 0, 0]}>
-          <sphereGeometry args={[0.25, 16, 16]} />
-          <meshBasicMaterial 
-            color={baseColor}
-            opacity={0.2}
-            transparent
-          />
-        </mesh>
-      )}
-      
-      {/* Date text */}
-      <Text
-        position={[0, -0.4, 0]}
-        fontSize={0.1}
-        color={isDark ? '#22c55e' : '#374151'}
-        anchorX="center"
-        anchorY="middle"
-        font={isDark ? '/fonts/mono.woff' : '/fonts/serif.woff'}
-      >
-        {event.date}
-      </Text>
+    <group ref={gridRef}>
+      {lines.map((points, index) => {
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        return (
+          <line key={index} geometry={geometry}>
+            <lineBasicMaterial 
+              color="#00ff41" 
+              opacity={0.1} 
+              transparent 
+            />
+          </line>
+        );
+      })}
     </group>
   );
 }
 
-// Composant principal de la scène 3D
-function TimelineScene({ isDark, onHover }: { 
+// Point de timeline cyberpunk
+function CyberpunkTimelinePoint({ event, isDark, onHover }: { 
+  event: TimelineEvent, 
+  isDark: boolean,
+  onHover: (event: TimelineEvent | null) => void 
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      // Rotation constante
+      groupRef.current.rotation.y += 0.01;
+      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime + event.position[0]) * 0.1;
+      
+      // Effet de hovering
+      const targetScale = hovered ? 1.5 : 1;
+      groupRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      
+      // Position flottante
+      groupRef.current.position.y = event.position[1] + Math.sin(state.clock.elapsedTime * 2 + event.position[0]) * 0.1;
+    }
+  });
+
+  const geometry = isDark ? 
+    new THREE.OctahedronGeometry(0.2, 1) : 
+    new THREE.IcosahedronGeometry(0.15, 1);
+
+  return (
+    <group 
+      ref={groupRef}
+      position={[event.position[0], event.position[1], event.position[2]]}
+      onPointerEnter={() => {
+        setHovered(true);
+        onHover(event);
+      }}
+      onPointerLeave={() => {
+        setHovered(false);
+        onHover(null);
+      }}
+    >
+      <mesh geometry={geometry}>
+        <CyberpunkMaterial color={event.color} isDark={isDark} />
+      </mesh>
+      
+      {/* Anneaux orbitaux pour mode cyberpunk */}
+      {isDark && (
+        <>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.4, 0.01, 8, 32]} />
+            <meshBasicMaterial color="#00ff41" opacity={0.3} transparent />
+          </mesh>
+          <mesh rotation={[0, Math.PI / 2, 0]}>
+            <torusGeometry args={[0.3, 0.005, 6, 24]} />
+            <meshBasicMaterial color="#ff0080" opacity={0.5} transparent />
+          </mesh>
+        </>
+      )}
+      
+      {/* Halo de particules */}
+      {hovered && (
+        <Sphere args={[0.5, 16, 16]}>
+          <meshBasicMaterial 
+            color={event.color} 
+            opacity={0.1} 
+            transparent 
+            side={THREE.BackSide}
+          />
+        </Sphere>
+      )}
+    </group>
+  );
+}
+
+// Scène principale
+function CyberpunkTimelineScene({ isDark, onHover }: { 
   isDark: boolean, 
   onHover: (event: TimelineEvent | null) => void 
 }) {
   const { camera } = useThree();
   
   useEffect(() => {
-    camera.position.set(4, 2, 6);
+    camera.position.set(6, 4, 8);
     camera.lookAt(4, 2, 0);
   }, [camera]);
 
-  // Génère les points pour la courbe
-  const curvePoints = timelineData.map(event => 
-    new THREE.Vector3(...event.position)
-  );
-
-  // Génère des particules flottantes
-  const particles = [];
-  for (let i = 0; i < 20; i++) {
-    particles.push(
-      <FloatingParticle
-        key={i}
-        position={[
-          Math.random() * 10 - 1,
-          Math.random() * 5,
-          Math.random() * 4 - 2
-        ]}
-        isDark={isDark}
-      />
-    );
-  }
+  // Courbe pour les particules voyageuses
+  const curvePoints = timelineData.map(event => new THREE.Vector3(...event.position));
+  const curve = new THREE.CatmullRomCurve3(curvePoints);
 
   return (
     <>
-      {/* Lumières */}
-      <ambientLight intensity={isDark ? 0.3 : 0.6} />
-      <pointLight 
-        position={[10, 10, 10]} 
-        intensity={isDark ? 0.8 : 1} 
-        color={isDark ? '#22c55e' : '#ffffff'}
-      />
+      {/* Éclairage dynamique */}
+      <ambientLight intensity={isDark ? 0.2 : 0.4} />
       
-      {/* Courbe de connexion */}
-      <ConnectionCurve points={curvePoints} isDark={isDark} />
+      {isDark ? (
+        <>
+          <pointLight position={[0, 5, 0]} intensity={0.8} color="#00ff41" />
+          <pointLight position={[8, 5, 0]} intensity={0.6} color="#ff0080" />
+          <spotLight 
+            position={[4, 8, 4]} 
+            target-position={[4, 0, 0]}
+            intensity={1}
+            color="#00ffff"
+            angle={Math.PI / 4}
+            penumbra={0.5}
+          />
+        </>
+      ) : (
+        <>
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <pointLight position={[4, 6, 4]} intensity={0.5} color="#ffffff" />
+        </>
+      )}
+      
+      {/* Grille cyberpunk */}
+      <CyberpunkGrid isDark={isDark} />
       
       {/* Points de timeline */}
       {timelineData.map(event => (
-        <TimelinePoint
+        <CyberpunkTimelinePoint
           key={event.id}
           event={event}
           isDark={isDark}
@@ -240,52 +399,79 @@ function TimelineScene({ isDark, onHover }: {
         />
       ))}
       
-      {/* Particules flottantes */}
-      {isDark && particles}
+      {/* Connexions lightning */}
+      {timelineData.slice(0, -1).map((event, index) => (
+        <LightningConnection
+          key={`connection-${index}`}
+          start={event.position}
+          end={timelineData[index + 1].position}
+          isDark={isDark}
+        />
+      ))}
       
-      {/* Contrôles */}
+      {/* Particules voyageuses */}
+      {isDark && Array.from({ length: 3 }, (_, i) => (
+        <TravelingParticle key={i} curve={curve} isDark={isDark} />
+      ))}
+      
       <OrbitControls
         enablePan={false}
         enableZoom={true}
         enableRotate={true}
-        maxDistance={12}
-        minDistance={4}
-        maxPolarAngle={Math.PI / 2}
+        maxDistance={15}
+        minDistance={3}
+        maxPolarAngle={Math.PI / 2.2}
+        autoRotate={false}
+        autoRotateSpeed={0.5}
       />
     </>
   );
 }
 
-// Composant tooltip
-function Tooltip({ event, isDark }: { event: TimelineEvent | null, isDark: boolean }) {
+// Tooltip amélioré
+function CyberpunkTooltip({ event, isDark }: { event: TimelineEvent | null, isDark: boolean }) {
   if (!event) return null;
 
   const Icon = event.icon;
   
   return (
     <div
-      className={`absolute top-4 left-4 p-4 rounded-lg border-2 max-w-sm z-10 transition-all duration-300 ${
+      className={`absolute top-4 left-4 p-6 rounded-xl border-2 max-w-sm z-10 transition-all duration-500 transform ${
         isDark
-          ? 'bg-gray-800/90 border-green-400/50 text-green-400'
-          : 'bg-white/90 border-blue-200 text-gray-800 shadow-xl'
+          ? 'bg-gray-900/95 border-green-400/70 text-green-400 shadow-2xl shadow-green-400/20'
+          : 'bg-white/95 border-blue-200 text-gray-800 shadow-2xl backdrop-blur-sm'
       }`}
+      style={{
+        backdropFilter: 'blur(20px)',
+        animation: 'slideInLeft 0.3s ease-out'
+      }}
     >
-      <div className="flex items-center gap-3 mb-2">
-        <div className={`p-2 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <Icon width={20} height={20} style={{ color: event.color }} />
+      <div className="flex items-center gap-4 mb-3">
+        <div className={`p-3 rounded-full relative overflow-hidden ${
+          isDark ? 'bg-gray-800 border border-green-400/30' : 'bg-gray-100'
+        }`}>
+          <Icon size={24} style={{ color: event.color }} />
+          {isDark && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent animate-pulse"></div>
+          )}
         </div>
         <div>
-          <h4 className={`font-bold text-lg ${isDark ? 'font-mono' : 'font-serif'}`}>
-            {event.title}
+          <h4 className={`font-bold text-xl mb-1 ${isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'}`}>
+            {isDark ? `> ${event.title}` : event.title}
           </h4>
-          <p className={`text-sm opacity-80 ${isDark ? 'font-mono' : ''}`}>
-            {event.date}
+          <p className={`text-sm opacity-80 ${isDark ? 'font-mono text-yellow-400' : 'text-blue-600'}`}>
+            {isDark ? `[${event.date}]` : event.date}
           </p>
         </div>
       </div>
       <p className={`text-sm leading-relaxed ${isDark ? 'font-mono text-gray-300' : 'text-gray-600'}`}>
-        {event.description}
+        {isDark ? `// ${event.description}` : event.description}
       </p>
+      {isDark && (
+        <div className="mt-3 text-xs font-mono text-green-400/70">
+          [SCAN_COMPLETE] • [DATA_RETRIEVED] • [ACCESS_GRANTED]
+        </div>
+      )}
     </div>
   );
 }
@@ -318,84 +504,144 @@ export default function TimelineSection() {
   return (
     <>
       <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes slideInLeft {
+          from { transform: translateX(-20px); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes scanline {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
         }
       `}</style>
 
-      <section id="timeline" className={`py-20 transition-all duration-1000 ${
-        isDark ? 'bg-gradient-to-b from-gray-800 to-gray-900' : 'bg-gradient-to-b from-white to-gray-50'
+      <section id="timeline" className={`py-20 relative transition-all duration-1000 ${
+        isDark 
+          ? 'bg-gradient-to-b from-gray-900 via-black to-gray-900' 
+          : 'bg-gradient-to-b from-white via-gray-50 to-blue-50'
       }`}>
-        <div className="container mx-auto px-8">
+        
+        {/* Effet scanline pour mode cyberpunk */}
+        {isDark && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div 
+              className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent"
+              style={{
+                animation: 'scanline 3s linear infinite'
+              }}
+            />
+          </div>
+        )}
+        
+        <div className="container mx-auto px-8 relative z-10">
           
-          {/* Titre */}
+          {/* Titre avec effet glitch */}
           <div className="text-center mb-16">
-            <h2 className={`text-5xl font-bold mb-4 transition-all duration-1000 ${
+            <h2 className={`text-6xl font-bold mb-6 relative transition-all duration-1000 ${
               isDark 
                 ? 'font-mono text-green-400' 
                 : 'font-serif text-gray-800'
             }`}>
               {isDark ? (
-                <span className="flex items-center justify-center gap-4">
-                  <Shield className="animate-pulse" />
-                  // Evolution Path
-                  <Calendar className="text-yellow-400" />
+                <span className="flex items-center justify-center gap-6">
+                  <Shield className="animate-pulse text-red-400" />
+                  <span className="relative">
+                    // NEURAL_PATHWAY.exe
+                    <span className="absolute inset-0 text-red-400 animate-ping opacity-20">
+                      // NEURAL_PATHWAY.exe
+                    </span>
+                  </span>
+                  <Calendar className="text-yellow-400 animate-bounce" />
                 </span>
               ) : (
-                <span>Journey & Milestones</span>
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                  Evolution Timeline
+                </span>
               )}
             </h2>
             
-            <p className={`text-xl max-w-2xl mx-auto transition-all duration-1000 ${
+            <p className={`text-xl max-w-3xl mx-auto transition-all duration-1000 ${
               isDark 
                 ? 'font-mono text-gray-300' 
                 : 'font-serif text-gray-600'
             }`}>
               {isDark ? (
                 <>
-                  <span className="text-green-400">[TIMELINE]</span> Progression through the digital realm
+                  <span className="text-green-400 font-bold">[SYSTEM_INITIALIZED]</span> Mapping digital evolution pathway...
                   <br />
-                  <span className="text-yellow-400">[INTERACTIVE]</span> Hover over nodes to explore
+                  <span className="text-yellow-400 font-bold">[INTERACTIVE_MODE]</span> Deploy cursor to access node intel
+                  <br />
+                  <span className="text-red-400 font-bold animate-pulse">[WARNING]</span> Highly classified progression data
                 </>
               ) : (
-                "An interactive journey through my academic and professional evolution, from student to cybersecurity enthusiast."
+                "Navigate through my professional journey in this interactive 3D timeline. Each milestone represents a step forward in my quest for knowledge and expertise in technology."
               )}
             </p>
           </div>
 
-          {/* Scène 3D */}
-          <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden border-2 transition-all duration-1000" 
-               style={{
-                 background: isDark 
-                   ? 'linear-gradient(45deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%)'
-                   : 'linear-gradient(45deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.9) 100%)',
-                 borderColor: isDark ? 'rgba(34, 197, 94, 0.3)' : 'rgba(59, 130, 246, 0.3)'
-               }}>
-            
-            <Canvas>
-              <TimelineScene isDark={isDark} onHover={setHoveredEvent} />
+          {/* Canvas 3D avec effets */}
+          <div 
+            className="relative h-[600px] rounded-2xl overflow-hidden border-2 transition-all duration-1000 shadow-2xl" 
+            style={{
+              background: isDark 
+                ? 'radial-gradient(circle at center, rgba(0, 20, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%)'
+                : 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%)',
+              borderColor: isDark ? 'rgba(34, 197, 94, 0.5)' : 'rgba(59, 130, 246, 0.3)',
+              boxShadow: isDark 
+                ? '0 0 50px rgba(34, 197, 94, 0.2), inset 0 0 50px rgba(0, 255, 65, 0.05)' 
+                : '0 25px 50px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            <Canvas shadows>
+              <CyberpunkTimelineScene isDark={isDark} onHover={setHoveredEvent} />
             </Canvas>
             
-            <Tooltip event={hoveredEvent} isDark={isDark} />
+            <CyberpunkTooltip event={hoveredEvent} isDark={isDark} />
           </div>
 
-          {/* Instructions */}
-          <div className="mt-8 text-center">
-            <p className={`text-sm transition-all duration-1000 ${
-              isDark ? 'font-mono text-gray-400' : 'text-gray-600'
+          {/* Contrôles et stats */}
+          <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
+            <div className={`p-4 rounded-lg border transition-all duration-1000 ${
+              isDark 
+                ? 'bg-gray-900/50 border-green-400/30 text-green-400' 
+                : 'bg-white border-blue-200 text-gray-700'
             }`}>
-              {isDark ? 
-                '// Use mouse to navigate • Hover nodes for intel • Scroll to zoom' :
-                'Utilisez votre souris pour naviguer • Survolez les points pour plus de détails • Molette pour zoomer'
-              }
-            </p>
+              <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
+                {isDark ? '// Navigation' : 'Controls'}
+              </h4>
+              <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
+                {isDark 
+                  ? 'Mouse: Orbital scan • Scroll: Zoom protocol • Hover: Data extraction'
+                  : 'Drag to rotate • Scroll to zoom • Hover for details'
+                }
+              </p>
+            </div>
+            
+            <div className={`p-4 rounded-lg border transition-all duration-1000 ${
+              isDark 
+                ? 'bg-gray-900/50 border-yellow-400/30 text-yellow-400' 
+                : 'bg-white border-blue-200 text-gray-700'
+            }`}>
+              <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
+                {isDark ? '// Timeline Span' : 'Duration'}
+              </h4>
+              <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
+                {isDark ? '[2023.06] → [2025.05] • 24 months active' : 'June 2023 - May 2025'}
+              </p>
+            </div>
+            
+            <div className={`p-4 rounded-lg border transition-all duration-1000 ${
+              isDark 
+                ? 'bg-gray-900/50 border-red-400/30 text-red-400' 
+                : 'bg-white border-blue-200 text-gray-700'
+            }`}>
+              <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
+                {isDark ? '// Achievements' : 'Milestones'}
+              </h4>
+              <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
+                {isDark ? '5 nodes • 3 levels • 1 exploit ranked' : '5 major achievements unlocked'}
+              </p>
+            </div>
           </div>
         </div>
       </section>
