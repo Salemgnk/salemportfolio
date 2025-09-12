@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Terminal, Code, Sun, Moon } from "lucide-react";
 
+
 export default function NavBar() {
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains("dark")
   );
 
-  // Synchronise quand on toggle
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add("dark");
