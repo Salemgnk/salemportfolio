@@ -3,6 +3,7 @@ import {
   ExternalLink, Github, Code2, Globe, Database, Terminal, Zap, Eye, Lock,
   AlertTriangle, Target, AppWindow
 } from "lucide-react";
+import CyberGrid from './CyberGrid';
 
 type ProjectColor = 'red' | 'green' | 'purple' | 'yellow' | 'blue' | 'orange';
 type ProjectStatus = 'Live' | 'In Development' | '[CLASSIFIED]' | '[ACTIVE]' | '[RESEARCH]' | '[DEPLOYED]';
@@ -302,8 +303,16 @@ export default function ProjectsSection() {
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
-      <section id="projects" className={`py-20 transition-all duration-1000 ${isDark ? 'bg-gray-900' : 'bg-gradient-to-b from-purple-50 via-blue-50 to-slate-50'}`}>
-        <div className="container mx-auto px-8">
+      <section 
+        id="projects" 
+        className="py-20 transition-all duration-1000 relative"
+        style={isDark 
+          ? { background: 'linear-gradient(to bottom, #020617 0%, #111827 50%, #1f2937 100%)' }
+          : { background: 'linear-gradient(to bottom, #f3e8ff 0%, #eff6ff 50%, #f8fafc 100%)' }
+        }
+      >
+        {isDark && <CyberGrid opacity={0.06} />}
+        <div className="container mx-auto px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className={`text-5xl font-bold mb-4 transition-all duration-1000 ${isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'}`}>
               {isDark ? (

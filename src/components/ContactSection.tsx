@@ -13,6 +13,7 @@ import {
 
 import ReCAPTCHA from "react-google-recaptcha";
 import emailjs from "emailjs-com";
+import CyberGrid from './CyberGrid';
 
 export default function ContactSection() {
   // Synchronisation avec le système de thème global (comme dans les autres composants)
@@ -222,10 +223,16 @@ export default function ContactSection() {
       `}</style>
 
       {/* Suppression du bouton toggle et de la div avec background fixe */}
-      <section id="contact" className={`py-20 min-h-screen transition-all duration-1000 ${
-        isDark ? 'bg-gray-900' : 'bg-gradient-to-b from-slate-100 via-gray-100 to-slate-50'
-      }`}>
-        <div className="container mx-auto px-8 max-w-4xl">
+      <section 
+        id="contact" 
+        className="py-20 min-h-screen transition-all duration-1000 relative"
+        style={isDark 
+          ? { background: 'linear-gradient(to bottom, #0f172a 0%, #020617 50%, #000000 100%)' }
+          : { background: 'linear-gradient(to bottom, #f1f5f9 0%, #f3f4f6 50%, #f8fafc 100%)' }
+        }
+      >
+        {isDark && <CyberGrid opacity={0.04} />}
+        <div className="container mx-auto px-8 max-w-4xl relative z-10">
           
           {/* Titre principal */}
           <div className="text-center mb-16">

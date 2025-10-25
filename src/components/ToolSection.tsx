@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Code, Computer, Cpu, Database, Globe, Search, Smartphone, Target, Wifi, Terminal, AlertTriangle, Lock } from "lucide-react";
+import CyberGrid from './CyberGrid';
 
 export default function ToolsSection() {
   const [isDark, setIsDark] = useState(
@@ -265,10 +266,16 @@ export default function ToolsSection() {
         }
       `}</style>
 
-      <section id="skills" className={`py-20 transition-all duration-1000 ${
-        isDark ? 'bg-gray-800' : 'bg-gradient-to-b from-slate-50 via-gray-50 to-slate-100'
-      }`}>
-        <div className="container mx-auto px-8">
+      <section 
+        id="skills" 
+        className="py-20 transition-all duration-1000 relative"
+        style={isDark 
+          ? { background: 'linear-gradient(to bottom, #1f2937 0%, #111827 50%, #0f172a 100%)' }
+          : { background: 'linear-gradient(to bottom, #f8fafc 0%, #f9fafb 50%, #f1f5f9 100%)' }
+        }
+      >
+        {isDark && <CyberGrid opacity={0.05} />}
+        <div className="container mx-auto px-8 relative z-10">
           
           {/* Titre principal */}
           <div className="text-center mb-16">

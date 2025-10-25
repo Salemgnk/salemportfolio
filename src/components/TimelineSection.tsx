@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Award, Briefcase, GraduationCap, Shield, Target } from 'lucide-react';
+import CyberGrid from './CyberGrid';
 
 // Types
 interface TimelineEvent {
@@ -156,22 +157,28 @@ export default function TimelineSection() {
   }, []);
 
   return (
-    <section id="timeline" className={`py-20 relative transition-all duration-1000 ${
-      isDark 
-        ? 'bg-gradient-to-b from-gray-900 via-black to-gray-900' 
-        : 'bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50'
-    }`}>
+    <section 
+      id="timeline" 
+      className="py-20 relative transition-all duration-1000"
+      style={isDark 
+        ? { background: 'linear-gradient(to bottom, #111827 0%, #0f172a 50%, #020617 100%)' }
+        : { background: 'linear-gradient(to bottom, #e0e7ff 0%, #ddd6fe 50%, #f3e8ff 100%)' }
+      }
+    >
       
-      {/* Effet scanline pour mode cyberpunk */}
+      {/* Effet scanline + grille pour mode cyberpunk */}
       {isDark && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div 
-            className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent"
-            style={{
-              animation: 'scanline 3s linear infinite'
-            }}
-          />
-        </div>
+        <>
+          <CyberGrid opacity={0.08} />
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div 
+              className="absolute w-full h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent"
+              style={{
+                animation: 'scanline 3s linear infinite'
+              }}
+            />
+          </div>
+        </>
       )}
       
       <div className="container mx-auto px-8 relative z-10">

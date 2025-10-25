@@ -222,9 +222,13 @@ export default function HeroSection() {
                 }
             `}</style>
 
-            <section className={`min-h-screen flex items-center justify-center py-20 transition-all duration-1000 relative overflow-hidden ${
-                isDark ? "cyber-gradient" : "bg-gradient-to-b from-white via-blue-50 to-indigo-50"
-            }`}>
+            <section 
+                className="min-h-screen flex items-center justify-center py-20 transition-all duration-1000 relative overflow-hidden"
+                style={isDark 
+                    ? { background: 'linear-gradient(to bottom, #0a0a0a 0%, #1a1a2e 50%, #111827 100%)' }
+                    : { background: 'linear-gradient(to bottom, #ffffff 0%, #eff6ff 60%, #e0e7ff 100%)' }
+                }
+            >
                 
                 {/* Animated Background */}
                 {isDark ? (
