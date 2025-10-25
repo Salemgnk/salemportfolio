@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import salemImage from '../assets/salem.jpeg';
 import cvFr from '../assets/cv_salem_gnandi_fr.pdf';
 import cvEn from '../assets/cv_salem_gnandi_en.pdf';
+import Iridescence from './Iridescence';
 
 export default function HeroSection() {
     const [isDark, setIsDark] = useState(
@@ -224,9 +225,18 @@ export default function HeroSection() {
                 isDark ? "cyber-gradient" : "bg-gradient-to-b from-blue-50 via-white to-gray-50"
             }`}>
                 
-                {/* Animated Grid Background */}
-                {isDark && (
+                {/* Animated Background */}
+                {isDark ? (
                     <div className="absolute inset-0 cyber-grid opacity-20 pointer-events-none"></div>
+                ) : (
+                    <div className="absolute inset-0 opacity-30 pointer-events-none">
+                        <Iridescence 
+                            color={[0.4, 0.6, 1.0]} 
+                            speed={0.5} 
+                            amplitude={0.15} 
+                            mouseReact={true}
+                        />
+                    </div>
                 )}
 
                 <div className="container mx-auto px-6 md:px-12 flex flex-col items-center text-center gap-4 md:gap-6 relative z-10">
