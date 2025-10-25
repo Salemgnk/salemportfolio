@@ -9,13 +9,10 @@ import {
   Home,
   Terminal,
   Folder,
-  File,
   ChevronRight,
   ChevronDown,
-  Settings,
-  Database,
-  Image,
-  Archive
+  Sun,
+  Moon
 } from "lucide-react";
 
 interface SidebarFile {
@@ -33,7 +30,7 @@ export default function Sidebar() {
     document.documentElement.classList.contains("dark")
   );
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['portfolio', 'system']));
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['portfolio']));
 
   useEffect(() => {
     if (isDark) {
@@ -46,122 +43,47 @@ export default function Sidebar() {
   const files: SidebarFile[] = [
     {
       id: 'home',
-      name: 'home.exe',
+      name: isDark ? 'home.exe' : 'home',
       icon: <Home size={16} />,
       type: 'file',
       href: '#home'
     },
     {
       id: 'portfolio',
-      name: 'portfolio/',
+      name: isDark ? 'portfolio/' : 'portfolio',
       icon: <Folder size={16} />,
       type: 'folder',
       isOpen: true,
       children: [
         {
-          id: 'about',
-          name: 'about.json',
-          icon: <FileText size={16} />,
+          id: 'skills',
+          name: isDark ? 'skills.dll' : 'skills',
+          icon: <Wrench size={16} />,
           type: 'file',
-          href: '#about'
+          href: '#skills'
         },
         {
           id: 'projects',
-          name: 'projects.exe',
+          name: isDark ? 'projects.exe' : 'projects',
           icon: <Briefcase size={16} />,
           type: 'file',
           href: '#projects'
         },
         {
           id: 'timeline',
-          name: 'timeline.log',
+          name: isDark ? 'timeline.log' : 'timeline',
           icon: <Clock size={16} />,
           type: 'file',
           href: '#timeline'
-        },
-        {
-          id: 'resume',
-          name: 'resume.pdf',
-          icon: <FileText size={16} />,
-          type: 'file',
-          href: '#resume'
-        }
-      ]
-    },
-    {
-      id: 'system',
-      name: 'system/',
-      icon: <Terminal size={16} />,
-      type: 'folder',
-      isOpen: true,
-      children: [
-        {
-          id: 'skills',
-          name: 'skills.dll',
-          icon: <Wrench size={16} />,
-          type: 'file',
-          href: '#skills'
-        },
-        {
-          id: 'tools',
-          name: 'tools.config',
-          icon: <Code size={16} />,
-          type: 'file',
-          href: '#tools'
-        },
-        {
-          id: 'database',
-          name: 'database.sql',
-          icon: <Database size={16} />,
-          type: 'file',
-          href: '#database'
-        }
-      ]
-    },
-    {
-      id: 'assets',
-      name: 'assets/',
-      icon: <Folder size={16} />,
-      type: 'folder',
-      isOpen: false,
-      children: [
-        {
-          id: 'images',
-          name: 'images/',
-          icon: <Folder size={16} />,
-          type: 'folder',
-          children: [
-            {
-              id: 'avatar',
-              name: 'avatar.png',
-              icon: <Image size={16} />,
-              type: 'file',
-              href: '#avatar'
-            }
-          ]
-        },
-        {
-          id: 'downloads',
-          name: 'downloads.zip',
-          icon: <Archive size={16} />,
-          type: 'file',
-          href: '#downloads'
         }
       ]
     },
     {
       id: 'contact',
-      name: 'contact.exe',
+      name: isDark ? 'contact.exe' : 'contact',
       icon: <Mail size={16} />,
       type: 'file',
       href: '#contact'
-    },
-    {
-      id: 'config',
-      name: 'config.ini',
-      icon: <Settings size={16} />,
-      type: 'file',
-      href: '#config'
     }
   ];
 
@@ -199,7 +121,7 @@ export default function Sidebar() {
             hover:bg-opacity-20 hover:scale-[1.02]
             ${isDark 
               ? 'retro-file text-gray-300 hover:text-green-400' 
-              : 'hover:bg-blue-100 text-gray-700 hover:text-blue-600'
+              : 'hover:bg-blue-50 text-gray-700 hover:text-blue-600'
             }
             ${depth > 0 ? 'ml-4' : ''}
           `}
@@ -209,16 +131,16 @@ export default function Sidebar() {
           {isFolder && (
             <div className="flex-shrink-0">
               {isExpanded ? (
-                <ChevronDown size={12} className="text-gray-500" />
+                <ChevronDown size={12} className={isDark ? "text-green-400" : "text-blue-500"} />
               ) : (
-                <ChevronRight size={12} className="text-gray-500" />
+                <ChevronRight size={12} className={isDark ? "text-gray-500" : "text-gray-400"} />
               )}
             </div>
           )}
           <div className={`flex-shrink-0 ${isDark ? 'text-green-400' : 'text-blue-600'}`}>
             {file.icon}
           </div>
-          <span className="text-sm font-mono truncate">
+          <span className={`text-sm truncate ${isDark ? 'font-mono' : 'font-sans'}`}>
             {file.name}
           </span>
           {file.type === 'file' && (
@@ -235,10 +157,6 @@ export default function Sidebar() {
     );
   };
 
-  if (!isDark) {
-    return null; // Only show sidebar in dark mode
-  }
-
   return (
     <>
       {/* Backdrop for mobile */}
@@ -251,88 +169,137 @@ export default function Sidebar() {
       
       <div className={`
         fixed left-0 top-0 h-full z-30 transition-all duration-300
-        ${isCollapsed ? 'w-12' : 'w-48 md:w-64'}
+        ${isCollapsed ? 'w-16' : 'w-64'}
         ${isDark 
           ? 'retro-sidebar' 
-          : 'bg-white border-r border-gray-200 shadow-lg'
+          : 'bg-white border-r-2 border-blue-200 shadow-xl'
         }
-        ${!isCollapsed ? 'md:shadow-2xl' : ''}
       `}>
-      {/* Header */}
-      <div className={`
-        flex items-center justify-between p-4 border-b
-        ${isDark ? 'border-green-400/20' : 'border-gray-200'}
-      `}>
-        {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <Terminal size={20} className="text-green-400 animate-pulse" />
-            <span className="text-green-400 font-mono text-sm font-bold">
-              explorer.exe
-            </span>
-          </div>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`
-            p-1 rounded transition-colors
-            ${isDark 
-              ? 'hover:bg-green-400/20 text-green-400' 
-              : 'hover:bg-gray-100 text-gray-600'
-            }
-          `}
-        >
-          {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
-        </button>
-      </div>
-
-      {/* File Tree */}
-      <div className="p-2 space-y-1 overflow-y-auto h-full">
-        {!isCollapsed && (
-          <div className="mb-4">
-            <div className="text-xs text-gray-500 font-mono mb-2 px-2">
-              C:\Users\Scorpi777\Desktop\
-            </div>
-            {files.map(file => renderFile(file))}
-          </div>
-        )}
-        
-        {isCollapsed && (
-          <div className="flex flex-col items-center space-y-4 py-4">
-            {files.map(file => (
-              <div
-                key={file.id}
-                className={`
-                  p-2 rounded cursor-pointer transition-all duration-200
-                  hover:bg-green-400/20 hover:scale-110
-                  ${isDark ? 'text-green-400' : 'text-blue-600'}
-                `}
-                onClick={() => handleFileClick(file)}
-                title={file.name}
-              >
-                {file.icon}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      {!isCollapsed && (
+        {/* Header */}
         <div className={`
-          absolute bottom-0 left-0 right-0 p-2 border-t
-          ${isDark ? 'border-green-400/20 bg-gray-900/50' : 'border-gray-200 bg-gray-50'}
+          flex items-center justify-between p-4 border-b
+          ${isDark ? 'border-green-400/20' : 'border-blue-200'}
         `}>
-        <div className="text-xs text-gray-500 font-mono text-center">
-          {isDark ? (
-            <>
-              <span className="terminal-cursor">&gt;_{' '}</span>
-            </>
-          ) : (
-            'Ready'
+          {!isCollapsed && (
+            <div className="flex items-center gap-2">
+              {isDark ? (
+                <>
+                  <Terminal size={20} className="text-green-400 animate-pulse" />
+                  <span className="text-green-400 font-mono text-sm font-bold">
+                    explorer.exe
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Code size={20} className="text-blue-600" />
+                  <span className="text-blue-600 font-semibold text-sm">
+                    Navigation
+                  </span>
+                </>
+              )}
+            </div>
+          )}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`
+              p-1 rounded transition-colors
+              ${isDark 
+                ? 'hover:bg-green-400/20 text-green-400' 
+                : 'hover:bg-blue-100 text-blue-600'
+              }
+            `}
+          >
+            {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+          </button>
+        </div>
+
+        {/* File Tree */}
+        <div className="p-2 space-y-1 overflow-y-auto h-[calc(100vh-140px)]">
+          {!isCollapsed && (
+            <div className="mb-4">
+              <div className={`text-xs mb-2 px-2 ${isDark ? 'text-gray-500 font-mono' : 'text-gray-400 font-sans'}`}>
+                {isDark ? 'C:\\Users\\Scorpi777\\Desktop\\' : 'Portfolio'}
+              </div>
+              {files.map(file => renderFile(file))}
+            </div>
+          )}
+          
+          {isCollapsed && (
+            <div className="flex flex-col items-center space-y-4 py-4">
+              {files.map(file => (
+                <div
+                  key={file.id}
+                  className={`
+                    p-2 rounded cursor-pointer transition-all duration-200
+                    hover:scale-110
+                    ${isDark 
+                      ? 'hover:bg-green-400/20 text-green-400' 
+                      : 'hover:bg-blue-100 text-blue-600'
+                    }
+                  `}
+                  onClick={() => handleFileClick(file)}
+                  title={file.name}
+                >
+                  {file.icon}
+                </div>
+              ))}
+            </div>
           )}
         </div>
+
+        {/* Footer avec toggle theme */}
+        <div className={`
+          absolute bottom-0 left-0 right-0 p-3 border-t
+          ${isDark ? 'border-green-400/20 bg-gray-900/50' : 'border-blue-200 bg-gray-50'}
+        `}>
+          {!isCollapsed ? (
+            <div className="flex items-center justify-between">
+              <div className={`text-xs ${isDark ? 'text-gray-500 font-mono' : 'text-gray-400'}`}>
+                {isDark ? (
+                  <>
+                    <span className="terminal-cursor">&gt;_{' '}</span>
+                  </>
+                ) : (
+                  'Theme'
+                )}
+              </div>
+              <button
+                className={`relative p-2 rounded-full transition-all duration-500 hover:scale-110 group overflow-hidden ${
+                  isDark
+                    ? "cyber-gradient glow-border-cyan"
+                    : "bg-blue-100 text-blue-600 hover:bg-blue-200 border border-blue-200"
+                }`}
+                onClick={() => setIsDark(!isDark)}
+              >
+                {isDark && (
+                  <div className="absolute inset-0 holographic opacity-20"></div>
+                )}
+                <div className="relative z-10">
+                  {isDark ? (
+                    <Sun size={16} className="neon-cyan animate-pulse" />
+                  ) : (
+                    <Moon size={16} />
+                  )}
+                </div>
+              </button>
+            </div>
+          ) : (
+            <button
+              className={`w-full p-2 rounded-full transition-all duration-500 hover:scale-110 ${
+                isDark
+                  ? "cyber-gradient glow-border-cyan"
+                  : "bg-blue-100 text-blue-600 hover:bg-blue-200"
+              }`}
+              onClick={() => setIsDark(!isDark)}
+            >
+              {isDark ? (
+                <Sun size={16} className="neon-cyan animate-pulse mx-auto" />
+              ) : (
+                <Moon size={16} className="mx-auto" />
+              )}
+            </button>
+          )}
         </div>
-      )}
       </div>
     </>
   );

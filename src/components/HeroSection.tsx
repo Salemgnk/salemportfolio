@@ -172,19 +172,24 @@ export default function HeroSection() {
         <>
             {/* CSS personnalisé pour les effets */}
             <style>{`
-                @keyframes matrix-fall {
-                    0% { transform: translateY(-100vh); opacity: 0; }
-                    10% { opacity: 1; }
-                    90% { opacity: 1; }
-                    100% { transform: translateY(100vh); opacity: 0; }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
                 }
                 
-                .matrix-char {
-                    position: absolute;
-                    color: #00ff41;
-                    font-family: 'Courier New', monospace;
-                    animation: matrix-fall linear infinite;
-                    text-shadow: 0 0 5px #00ff41;
+                @keyframes pulse-ring {
+                    0% {
+                        transform: scale(0.95);
+                        opacity: 1;
+                    }
+                    50% {
+                        transform: scale(1.05);
+                        opacity: 0.7;
+                    }
+                    100% {
+                        transform: scale(0.95);
+                        opacity: 1;
+                    }
                 }
                 
                 @keyframes glitch {
@@ -195,47 +200,41 @@ export default function HeroSection() {
                     80% { transform: translateX(1px); }
                 }
                 
-                .animate-glitch:hover {
-                    animation: glitch 0.3s ease-in-out infinite;
+                .animate-float {
+                    animation: float 6s ease-in-out infinite;
                 }
                 
-                .text-glow {
-                    text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+                .text-holographic {
+                    background: linear-gradient(
+                        135deg,
+                        oklch(0.85 0.2 200),
+                        oklch(0.75 0.25 340),
+                        oklch(0.8 0.25 150)
+                    );
+                    background-size: 200% 200%;
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: holographic-shift 3s ease infinite;
                 }
             `}</style>
 
-            <section className={`min-h-screen flex items-center justify-center pt-20 md:pt-24 transition-all duration-1000 relative overflow-hidden ${
-                isDark ? "bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900" :
-                "bg-gradient-to-b from-blue-50 via-white to-gray-50" 
+            <section className={`min-h-screen flex items-center justify-center pt-24 md:pt-28 pb-16 transition-all duration-1000 relative overflow-hidden ${
+                isDark ? "cyber-gradient" : "bg-gradient-to-b from-blue-50 via-white to-gray-50"
             }`}>
                 
-                {/* Effet Matrix Rain pour le mode sombre */}
+                {/* Animated Grid Background */}
                 {isDark && (
-                    <div className="absolute inset-0 pointer-events-none">
-                        {Array.from({ length: 30 }).map((_, i) => (
-                            <div
-                                key={i}
-                                className="matrix-char text-xs opacity-30"
-                                style={{
-                                    left: `${Math.random() * 100}%`,
-                                    animationDelay: `${Math.random() * 3}s`,
-                                    animationDuration: `${3 + Math.random() * 2}s`
-                                }}
-                            >
-                                {String.fromCharCode(0x30A0 + Math.random() * 96)}
-                            </div>
-                        ))}
-                    </div>
+                    <div className="absolute inset-0 cyber-grid opacity-20 pointer-events-none"></div>
                 )}
 
                 <div className="container mx-auto px-8 flex flex-col items-center text-center gap-6 md:gap-8 relative z-10">
                     
-
-                    {/* Photo de profil avec effets */}
-                    <div className='relative transition-all duration-1000 z-10'>
+                    {/* Photo de profil avec effets holographiques */}
+                    <div className='relative transition-all duration-1000 z-10 animate-float'>
                         <div className={`w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden transition-all duration-1000 relative z-20 ${
                             isDark ? 
-                                "ring-4 ring-green-400 shadow-2xl shadow-green-400/20" : 
+                                "glow-border-cyan shadow-2xl shadow-[oklch(0.85_0.2_200_/_0.3)]" : 
                                 "ring-4 ring-blue-300 shadow-2xl shadow-blue-200/50"
                         }`}>
                             <img 
@@ -243,35 +242,34 @@ export default function HeroSection() {
                                 alt="Salem GNANDI" 
                                 className="w-full h-full object-cover transition-all duration-1000"
                             />
-                            {/* Overlay effect for dark mode */}
                             {isDark && (
-                                <div className="absolute inset-0 bg-green-400/10 mix-blend-overlay"></div>
+                                <div className="absolute inset-0 holographic opacity-20 mix-blend-overlay"></div>
                             )}
                         </div>
 
-                        {/* Effets pulse */}
+                        {/* Effets pulse améliorés */}
                         {isDark && (
                             <>
-                                <div className="absolute -inset-4 rounded-full bg-green-400/5 animate-ping z-10"></div>
-                                <div className="absolute -inset-2 rounded-full bg-green-400/10 animate-pulse z-10"></div>
+                                <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-[oklch(0.85_0.2_200_/_0.2)] via-[oklch(0.75_0.25_340_/_0.2)] to-[oklch(0.8_0.25_150_/_0.2)] blur-xl animate-pulse z-10"></div>
+                                <div className="absolute -inset-4 rounded-full border-2 border-[oklch(0.85_0.2_200_/_0.3)] animate-ping z-10"></div>
                             </>
                         )}
                     </div>
 
-                    {/* Title avec responsive */}
+                    {/* Title avec responsive et effets holographiques */}
                     <div className='space-y-4 md:space-y-6'>
                         <h1 className={`text-4xl md:text-6xl font-bold transition-all duration-1000 ${ isDark
-                        ? "font-mono text-green-400 tracking-wider text-glow"
+                        ? "font-mono text-holographic tracking-wider"
                         : "font-serif text-gray-800"
                         }`}>
                             { 
                             isDark
                             ? (
                                 <span className='flex flex-col md:flex-row items-center gap-2 md:gap-4 justify-center'>
-                                    <Terminal className='text-green-400 drop-shadow-lg animate-pulse' />
+                                    <Terminal className='neon-cyan drop-shadow-[0_0_20px_oklch(0.85_0.2_200)] animate-pulse' />
                                     <span className='relative'>
                                         <span ref={titleRef}>SCORPI777.exe</span>
-                                        <span className='animate-ping absolute -right-2 top-0 w-1 h-8 md:h-12 bg-green-400'></span>
+                                        <span className='animate-ping absolute -right-2 top-0 w-1 h-8 md:h-12 bg-[oklch(0.85_0.2_200)] shadow-[0_0_15px_oklch(0.85_0.2_200)]'></span>
                                     </span>
                                 </span>
                             )
@@ -290,9 +288,9 @@ export default function HeroSection() {
                                 isDark
                                 ? (
                                     <span ref={descriptionRef}>
-                                        <span className='text-green-400 font-bold'>[INFO]</span> Ethical hacker • Penetration tester • CTF competitor <br />
-                                        <span className='text-green-400 font-bold'>[STATUS]</span> Currently hunting for vulnerabilities... <br />
-                                        <span className='text-red-400 font-bold animate-pulse'>[ALERT]</span> System compromised successfully 🎯
+                                        <span className='neon-cyan font-bold'>[INFO]</span> Ethical hacker • Penetration tester • CTF competitor <br />
+                                        <span className='neon-green font-bold'>[STATUS]</span> Currently hunting for vulnerabilities... <br />
+                                        <span className='neon-pink font-bold animate-pulse'>[ALERT]</span> System compromised successfully 🎯
                                     </span>
                                 )
                                 :   (
@@ -308,25 +306,25 @@ export default function HeroSection() {
                         </p>
                     </div>
                     
-                    {/* Boutons avec effet scramble */}
+                    {/* Boutons avec effet holographique */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 md:px-0 w-full max-w-md md:max-w-none">
                         <ContactButton />
                         <DownloadButton />
                     </div>
 
-                    {/* Social links avec effets améliorés */}
-                    <div className='flex gap-4 md:gap-6 mt-6 md:mt-8'>
-                        {[
-                            { Icon: Github, href: "https://github.com/Salemgnk", label: isDark ? 'git_repos' : 'GitHub' },
-                            { Icon: Linkedin, href: "https://linkedin.com/in/salem-gnandi", label: isDark ? 'network' : 'LinkedIn' },
-                            { Icon: Mail, href: "mailto:gnandisalem@gmail.com", label: isDark ? 'contact' : 'Email' }
-                        ].map(({ Icon, href, label }) => (
+                    {/* Social links avec effets néon améliorés - espacement corrigé */}
+                    <div className='flex gap-6 md:gap-8 mt-6 md:mt-8'>
+                        { [
+                            { Icon: Github, href: "https://github.com/Salemgnk", label: isDark ? 'git_repos' : 'GitHub', color: 'cyan' },
+                            { Icon: Linkedin, href: "https://linkedin.com/in/salem-gnandi", label: isDark ? 'network' : 'LinkedIn', color: 'pink' },
+                            { Icon: Mail, href: "mailto:gnandisalem@gmail.com", label: isDark ? 'contact' : 'Email', color: 'green' }
+                        ].map(({ Icon, href, label, color }) => (
                             <a 
                                 key={label}
                                 href={href}
-                                className={`group p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden ${
+                                className={`group p-3 md:p-4 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden ${
                                     isDark 
-                                        ? 'bg-gray-800 text-green-400 hover:bg-green-400 hover:text-gray-900 shadow-lg shadow-green-400/10 hover:shadow-green-400/30' 
+                                        ? `cyber-gradient glow-border-${color}` 
                                         : 'bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white shadow-lg hover:shadow-xl'
                                 }`}
                                 target={href.startsWith('http') ? "_blank" : undefined}
@@ -334,14 +332,9 @@ export default function HeroSection() {
                                 aria-label={label}
                             >
                                 {isDark && (
-                                    <div className="absolute inset-0 bg-green-400/20 scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full"></div>
+                                    <div className="absolute inset-0 holographic opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-full"></div>
                                 )}
-                                <Icon size={20} className="md:w-6 md:h-6 relative z-10" />
-                                {isDark && (
-                                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                                        {label}
-                                    </span>
-                                )}
+                                <Icon size={22} className={`md:w-7 md:h-7 relative z-10 ${isDark ? `neon-${color}` : ''}`} />
                             </a>
                         ))}
                     </div>
