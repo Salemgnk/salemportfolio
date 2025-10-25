@@ -10,6 +10,7 @@ function App() {
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
   );
+  const [sidebarWidth, setSidebarWidth] = useState(64); // 16 * 4 = 64px (w-16)
 
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
@@ -51,8 +52,11 @@ function App() {
         </div>
       )}
       
-      <Sidebar />
-      <div className="transition-all duration-300 relative z-10">
+      <Sidebar onWidthChange={setSidebarWidth} />
+      <div 
+        className="transition-all duration-300 relative z-10"
+        style={{ marginLeft: `${sidebarWidth}px` }}
+      >
         <HeroSection />
         <ToolsSection />
         <TimelineSection />

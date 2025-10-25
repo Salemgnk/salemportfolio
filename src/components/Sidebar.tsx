@@ -25,7 +25,11 @@ interface SidebarFile {
   isOpen?: boolean;
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  onWidthChange?: (width: number) => void;
+}
+
+export default function Sidebar({ onWidthChange }: SidebarProps) {
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains("dark")
   );
@@ -39,6 +43,13 @@ export default function Sidebar() {
       document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
+
+  useEffect(() => {
+    // Notifier le parent du changement de largeur
+    if (onWidthChange) {
+      onWidthChange(isCollapsed ? 64 : 256); // w-16 = 64px, w-64 = 256px
+    }
+  }, [isCollapsed, onWidthChange]);
 
   const files: SidebarFile[] = [
     {

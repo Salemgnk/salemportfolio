@@ -70,8 +70,9 @@ export default function HeroSection() {
         const { scrambledText, scramble } = useScrambleText(isDark ? '🔓 ACCESS TERMINAL' : '📬 Contact me');
         
         return (
-            <button 
-                className={`px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform text-sm md:text-base relative overflow-hidden group ${
+            <a
+                href="#contact"
+                className={`px-5 md:px-7 py-2.5 md:py-3.5 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform text-sm md:text-base relative overflow-hidden group inline-block ${
                     isDark
                     ? "bg-green-400/10 text-green-400 border-2 border-green-400 hover:bg-green-400 hover:text-gray-900 hover:shadow-lg hover:shadow-green-400/20 font-mono tracking-wider"
                     : "bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl hover:shadow-blue-200/50"
@@ -82,7 +83,7 @@ export default function HeroSection() {
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/0 via-green-400/20 to-green-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 )}
                 <span className="relative z-10">{scrambledText}</span>
-            </button>
+            </a>
         );
     };
 
@@ -114,7 +115,7 @@ export default function HeroSection() {
         return (
             <div className="relative" ref={dropdownRef}>
                 <button 
-                    className={`px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform flex items-center justify-center gap-2 text-sm md:text-base relative overflow-hidden group ${
+                    className={`px-5 md:px-7 py-2.5 md:py-3.5 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform flex items-center justify-center gap-2 text-sm md:text-base relative overflow-hidden group ${
                         isDark
                         ? "bg-red-500/10 text-red-400 border-2 border-red-400 hover:bg-red-400 hover:text-gray-900 hover:shadow-lg hover:shadow-red-400/20 font-mono tracking-wider"
                         : "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl hover:shadow-green-200/50"
@@ -219,7 +220,7 @@ export default function HeroSection() {
                 }
             `}</style>
 
-            <section className={`min-h-screen flex items-center justify-center pt-24 md:pt-28 pb-16 transition-all duration-1000 relative overflow-hidden ${
+            <section className={`min-h-screen flex items-center justify-center py-20 transition-all duration-1000 relative overflow-hidden ${
                 isDark ? "cyber-gradient" : "bg-gradient-to-b from-blue-50 via-white to-gray-50"
             }`}>
                 
@@ -228,11 +229,11 @@ export default function HeroSection() {
                     <div className="absolute inset-0 cyber-grid opacity-20 pointer-events-none"></div>
                 )}
 
-                <div className="container mx-auto px-8 flex flex-col items-center text-center gap-6 md:gap-8 relative z-10">
+                <div className="container mx-auto px-6 md:px-12 flex flex-col items-center text-center gap-4 md:gap-6 relative z-10">
                     
                     {/* Photo de profil avec effets holographiques */}
                     <div className='relative transition-all duration-1000 z-10 animate-float'>
-                        <div className={`w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden transition-all duration-1000 relative z-20 ${
+                        <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden transition-all duration-1000 relative z-20 ${
                             isDark ? 
                                 "glow-border-cyan shadow-2xl shadow-[oklch(0.85_0.2_200_/_0.3)]" : 
                                 "ring-4 ring-blue-300 shadow-2xl shadow-blue-200/50"
@@ -257,19 +258,19 @@ export default function HeroSection() {
                     </div>
 
                     {/* Title avec responsive et effets holographiques */}
-                    <div className='space-y-4 md:space-y-6'>
-                        <h1 className={`text-4xl md:text-6xl font-bold transition-all duration-1000 ${ isDark
+                    <div className='space-y-3 md:space-y-4'>
+                        <h1 className={`text-3xl md:text-5xl font-bold transition-all duration-1000 ${ isDark
                         ? "font-mono text-holographic tracking-wider"
                         : "font-serif text-gray-800"
                         }`}>
                             { 
                             isDark
                             ? (
-                                <span className='flex flex-col md:flex-row items-center gap-2 md:gap-4 justify-center'>
-                                    <Terminal className='neon-cyan drop-shadow-[0_0_20px_oklch(0.85_0.2_200)] animate-pulse' />
+                                <span className='flex flex-col md:flex-row items-center gap-2 md:gap-3 justify-center'>
+                                    <Terminal className='neon-cyan drop-shadow-[0_0_20px_oklch(0.85_0.2_200)] animate-pulse' size={28} />
                                     <span className='relative'>
                                         <span ref={titleRef}>SCORPI777.exe</span>
-                                        <span className='animate-ping absolute -right-2 top-0 w-1 h-8 md:h-12 bg-[oklch(0.85_0.2_200)] shadow-[0_0_15px_oklch(0.85_0.2_200)]'></span>
+                                        <span className='animate-ping absolute -right-2 top-0 w-1 h-6 md:h-10 bg-[oklch(0.85_0.2_200)] shadow-[0_0_15px_oklch(0.85_0.2_200)]'></span>
                                     </span>
                                 </span>
                             )
@@ -280,7 +281,7 @@ export default function HeroSection() {
                             )}
                         </h1>
 
-                        <p className={`text-lg md:text-xl max-w-2xl transition-all duration-1000 px-4 md:px-0 ${isDark 
+                        <p className={`text-base md:text-lg max-w-xl transition-all duration-1000 px-4 md:px-0 ${isDark 
                             ? "font-mono text-gray-300 leading-relaxed"
                             : "font-serif text-gray-600"
                         }`}>
@@ -307,13 +308,13 @@ export default function HeroSection() {
                     </div>
                     
                     {/* Boutons avec effet holographique */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 md:px-0 w-full max-w-md md:max-w-none">
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full max-w-2xl px-4">
                         <ContactButton />
                         <DownloadButton />
                     </div>
 
                     {/* Social links avec effets néon améliorés - espacement corrigé */}
-                    <div className='flex gap-6 md:gap-8 mt-6 md:mt-8'>
+                    <div className='flex gap-4 md:gap-6 mt-4 md:mt-6'>
                         { [
                             { Icon: Github, href: "https://github.com/Salemgnk", label: isDark ? 'git_repos' : 'GitHub', color: 'cyan' },
                             { Icon: Linkedin, href: "https://linkedin.com/in/salem-gnandi", label: isDark ? 'network' : 'LinkedIn', color: 'pink' },
@@ -322,7 +323,7 @@ export default function HeroSection() {
                             <a 
                                 key={label}
                                 href={href}
-                                className={`group p-3 md:p-4 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden ${
+                                className={`group p-2.5 md:p-3 rounded-full transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative overflow-hidden ${
                                     isDark 
                                         ? `cyber-gradient glow-border-${color}` 
                                         : 'bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white shadow-lg hover:shadow-xl'
@@ -334,7 +335,7 @@ export default function HeroSection() {
                                 {isDark && (
                                     <div className="absolute inset-0 holographic opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-full"></div>
                                 )}
-                                <Icon size={22} className={`md:w-7 md:h-7 relative z-10 ${isDark ? `neon-${color}` : ''}`} />
+                                <Icon size={20} className={`md:w-6 md:h-6 relative z-10 ${isDark ? `neon-${color}` : ''}`} />
                             </a>
                         ))}
                     </div>
