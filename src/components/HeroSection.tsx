@@ -1,4 +1,4 @@
-import { Mail, Github, Linkedin, Shield, Terminal, Download, ChevronDown } from 'lucide-react';
+import { Mail, Github, Linkedin, Terminal, Download, ChevronDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import salemImage from '../assets/salem.jpeg';
 import cvFr from '../assets/cv_salem_gnandi_fr.pdf';

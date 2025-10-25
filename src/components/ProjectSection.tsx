@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
-  ExternalLink, Github, Code2, Globe, Database, Shield, Terminal, Zap, Eye, Lock,
-  AlertTriangle, Skull, Target, AppWindow
+  ExternalLink, Github, Code2, Globe, Database, Terminal, Zap, Eye, Lock,
+  AlertTriangle, Target, AppWindow
 } from "lucide-react";
 
 type ProjectColor = 'red' | 'green' | 'purple' | 'yellow' | 'blue' | 'orange';
@@ -226,9 +226,11 @@ export default function ProjectsSection() {
               <span className={`text-sm px-2 py-1 rounded ${isDark ? 'bg-gray-700 text-gray-300 font-mono' : 'bg-gray-100 text-gray-600 font-medium'}`}>
                 {project.category}
               </span>
-              <span className={`text-sm font-mono ${statusColorClasses[project.status] ?? 'text-gray-500'}`}>
-                {project.status}
-              </span>
+              {project.status && (
+                <span className={`text-sm font-mono ${statusColorClasses[project.status]}`}>
+                  {project.status}
+                </span>
+              )}
             </div>
           </div>
 
