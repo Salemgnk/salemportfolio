@@ -1,6 +1,8 @@
-import { Mail, Github, Linkedin, Shield, Terminal, Download } from 'lucide-react';
+import { Mail, Github, Linkedin, Shield, Terminal, Download, ChevronDown } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import salemImage from '../assets/salem.jpeg';
+import cvFr from '../assets/cv_salem_gnandi_fr.pdf';
+import cvEn from '../assets/cv_salem_gnandi_en.pdf';
 
 export default function HeroSection() {
     const [isDark, setIsDark] = useState(
@@ -85,31 +87,84 @@ export default function HeroSection() {
     };
 
     const DownloadButton = () => {
+        const [isOpen, setIsOpen] = useState(false);
+        const dropdownRef = useRef<HTMLDivElement>(null);
         const { scrambledText, scramble } = useScrambleText(isDark ? '📥 DOWNLOAD EXPLOITS' : '📥 Download CV');
         
+        // Fermer le menu quand on clique à l'extérieur
+        useEffect(() => {
+            const handleClickOutside = (event: MouseEvent) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                    setIsOpen(false);
+                }
+            };
+
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
+
+        const handleDownload = (lang: 'fr' | 'en') => {
+            const link = document.createElement('a');
+            link.href = lang === 'fr' ? cvFr : cvEn;
+            link.download = lang === 'fr' ? 'CV_Salem_GNANDI_FR.pdf' : 'CV_Salem_GNANDI_EN.pdf';
+            link.click();
+            setIsOpen(false);
+        };
+
         return (
-            <button 
-                className={`px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform flex items-center justify-center gap-2 text-sm md:text-base relative overflow-hidden group ${
-                    isDark
-                    ? "bg-red-500/10 text-red-400 border-2 border-red-400 hover:bg-red-400 hover:text-gray-900 hover:shadow-lg hover:shadow-red-400/20 font-mono tracking-wider"
-                    : "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl hover:shadow-green-200/50"
-                }`}
-                onMouseEnter={isDark ? scramble : undefined}
-                onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/path/to/your/cv.pdf';
-                    link.download = 'Salem_GNANDI_CV.pdf';
-                    link.click();
-                }}
-            >
-                {isDark && (
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" style={{
-                        background: 'linear-gradient(to right, rgba(255, 68, 68, 0), rgba(255, 68, 68, 0.2), rgba(255, 68, 68, 0))'
-                    }}></div>
+            <div className="relative" ref={dropdownRef}>
+                <button 
+                    className={`px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold transition-all duration-500 hover:scale-105 transform flex items-center justify-center gap-2 text-sm md:text-base relative overflow-hidden group ${
+                        isDark
+                        ? "bg-red-500/10 text-red-400 border-2 border-red-400 hover:bg-red-400 hover:text-gray-900 hover:shadow-lg hover:shadow-red-400/20 font-mono tracking-wider"
+                        : "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl hover:shadow-green-200/50"
+                    }`}
+                    onMouseEnter={isDark ? scramble : undefined}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isDark && (
+                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" style={{
+                            background: 'linear-gradient(to right, rgba(255, 68, 68, 0), rgba(255, 68, 68, 0.2), rgba(255, 68, 68, 0))'
+                        }}></div>
+                    )}
+                    <Download size={16} className="md:w-5 md:h-5 relative z-10" />
+                    <span className="relative z-10">{scrambledText}</span>
+                    <ChevronDown size={16} className={`md:w-5 md:h-5 relative z-10 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Menu déroulant */}
+                {isOpen && (
+                    <div className={`absolute top-full mt-2 w-full min-w-[200px] rounded-lg border-2 overflow-hidden z-50 ${
+                        isDark
+                            ? 'bg-gray-800 border-red-400/30 shadow-lg shadow-red-400/10'
+                            : 'bg-white border-green-200 shadow-xl'
+                    }`}>
+                        <button
+                            onClick={() => handleDownload('fr')}
+                            className={`w-full px-4 py-3 text-left transition-all duration-200 flex items-center gap-2 ${
+                                isDark
+                                    ? 'text-red-400 hover:bg-red-400/10 font-mono'
+                                    : 'text-green-700 hover:bg-green-50'
+                            }`}
+                        >
+                            <Download size={16} />
+                            <span>{isDark ? '// CV Français' : 'CV Français'}</span>
+                        </button>
+                        <div className={`h-px ${isDark ? 'bg-red-400/20' : 'bg-green-200'}`}></div>
+                        <button
+                            onClick={() => handleDownload('en')}
+                            className={`w-full px-4 py-3 text-left transition-all duration-200 flex items-center gap-2 ${
+                                isDark
+                                    ? 'text-red-400 hover:bg-red-400/10 font-mono'
+                                    : 'text-green-700 hover:bg-green-50'
+                            }`}
+                        >
+                            <Download size={16} />
+                            <span>{isDark ? '// CV English' : 'CV English'}</span>
+                        </button>
+                    </div>
                 )}
-                <Download size={16} className="md:w-5 md:h-5 relative z-10" />
-                <span className="relative z-10">{scrambledText}</span>
-            </button>
+            </div>
         );
     };
 
