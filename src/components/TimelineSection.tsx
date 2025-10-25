@@ -231,48 +231,6 @@ export default function TimelineSection() {
             />
           ))}
         </div>
-
-        {/* Stats */}
-        <div className="mt-16 grid md:grid-cols-3 gap-6 text-center">
-          <div className={`p-4 rounded-lg border transition-all duration-1000 ${
-            isDark 
-              ? 'bg-gray-900/50 border-green-400/30 text-green-400' 
-              : 'bg-white border-blue-200 text-gray-700'
-          }`}>
-            <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
-              {isDark ? '// Timeline Span' : 'Duration'}
-            </h4>
-            <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
-              {isDark ? '[2023.06] → [2025.07] • 25 months active' : 'June 2023 - July 2025'}
-            </p>
-          </div>
-          
-          <div className={`p-4 rounded-lg border transition-all duration-1000 ${
-            isDark 
-              ? 'bg-gray-900/50 border-yellow-400/30 text-yellow-400' 
-              : 'bg-white border-blue-200 text-gray-700'
-          }`}>
-            <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
-              {isDark ? '// Achievements' : 'Milestones'}
-            </h4>
-            <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
-              {isDark ? '6 events • 4 categories • 1 exploit ranked' : '6 major achievements unlocked'}
-            </p>
-          </div>
-          
-          <div className={`p-4 rounded-lg border transition-all duration-1000 ${
-            isDark 
-              ? 'bg-gray-900/50 border-red-400/30 text-red-400' 
-              : 'bg-white border-blue-200 text-gray-700'
-          }`}>
-            <h4 className={`font-bold mb-2 ${isDark ? 'font-mono' : 'font-serif'}`}>
-              {isDark ? '// Categories' : 'Categories'}
-            </h4>
-            <p className={`text-sm ${isDark ? 'font-mono' : ''}`}>
-              {isDark ? 'EDUCATION • CERT • EXP • ACHIEVEMENT' : 'Education • Certification • Experience • Achievement'}
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
