@@ -4,6 +4,7 @@ import salemImage from '../assets/salem.jpeg';
 import cvFr from '../assets/cv_salem_gnandi_fr.pdf';
 import cvEn from '../assets/cv_salem_gnandi_en.pdf';
 import Iridescence from './Iridescence';
+import FaultyTerminal from './FaultyTerminal';
 
 export default function HeroSection() {
     const [isDark, setIsDark] = useState(
@@ -222,14 +223,33 @@ export default function HeroSection() {
             `}</style>
 
             <section className={`min-h-screen flex items-center justify-center py-20 transition-all duration-1000 relative overflow-hidden ${
-                isDark ? "cyber-gradient" : "bg-gradient-to-b from-blue-50 via-white to-gray-50"
+                isDark ? "cyber-gradient" : "bg-gradient-to-b from-white via-blue-50 to-indigo-50"
             }`}>
                 
                 {/* Animated Background */}
                 {isDark ? (
-                    <div className="absolute inset-0 cyber-grid opacity-20 pointer-events-none"></div>
+                    <div className="absolute inset-0 opacity-20 pointer-events-none">
+                        <FaultyTerminal
+                            scale={1.2}
+                            gridMul={[2, 1]}
+                            digitSize={1.5}
+                            timeScale={0.3}
+                            scanlineIntensity={0.5}
+                            glitchAmount={1.2}
+                            flickerAmount={0.8}
+                            noiseAmp={1.5}
+                            chromaticAberration={2}
+                            dither={0.5}
+                            curvature={0.15}
+                            tint="#00ff00"
+                            mouseReact={true}
+                            mouseStrength={0.3}
+                            brightness={1.2}
+                            pageLoadAnimation={true}
+                        />
+                    </div>
                 ) : (
-                    <div className="absolute inset-0 opacity-30 pointer-events-none">
+                    <div className="absolute inset-0 opacity-25 pointer-events-none">
                         <Iridescence 
                             color={[0.4, 0.6, 1.0]} 
                             speed={0.5} 

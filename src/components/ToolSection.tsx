@@ -266,7 +266,7 @@ export default function ToolsSection() {
       `}</style>
 
       <section id="skills" className={`py-20 transition-all duration-1000 ${
-        isDark ? 'bg-gray-800' : 'bg-gray-50'
+        isDark ? 'bg-gray-800' : 'bg-gradient-to-b from-slate-50 via-gray-50 to-slate-100'
       }`}>
         <div className="container mx-auto px-8">
           

@@ -159,7 +159,7 @@ export default function TimelineSection() {
     <section id="timeline" className={`py-20 relative transition-all duration-1000 ${
       isDark 
         ? 'bg-gradient-to-b from-gray-900 via-black to-gray-900' 
-        : 'bg-gradient-to-b from-white via-gray-50 to-blue-50'
+        : 'bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50'
     }`}>
       
       {/* Effet scanline pour mode cyberpunk */}

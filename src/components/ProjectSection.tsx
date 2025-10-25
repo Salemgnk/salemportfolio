@@ -302,7 +302,7 @@ export default function ProjectsSection() {
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
-      <section id="projects" className={`py-20 transition-all duration-1000 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+      <section id="projects" className={`py-20 transition-all duration-1000 ${isDark ? 'bg-gray-900' : 'bg-gradient-to-b from-purple-50 via-blue-50 to-slate-50'}`}>
         <div className="container mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className={`text-5xl font-bold mb-4 transition-all duration-1000 ${isDark ? 'font-mono text-green-400' : 'font-serif text-gray-800'}`}>

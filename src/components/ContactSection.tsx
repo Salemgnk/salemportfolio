@@ -223,7 +223,7 @@ export default function ContactSection() {
 
       {/* Suppression du bouton toggle et de la div avec background fixe */}
       <section id="contact" className={`py-20 min-h-screen transition-all duration-1000 ${
-        isDark ? 'bg-gray-900' : 'bg-gradient-to-br from-slate-50 to-blue-50'
+        isDark ? 'bg-gray-900' : 'bg-gradient-to-b from-slate-100 via-gray-100 to-slate-50'
       }`}>
         <div className="container mx-auto px-8 max-w-4xl">
           

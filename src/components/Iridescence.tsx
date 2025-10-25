@@ -46,19 +46,22 @@ void main() {
 }
 `;
 
-interface IridescenceProps extends React.HTMLAttributes<HTMLDivElement> {
+interface IridescenceProps {
   color?: [number, number, number];
   speed?: number;
   amplitude?: number;
   mouseReact?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function Iridescence({ 
   color = [1, 1, 1], 
   speed = 1.0, 
   amplitude = 0.1, 
-  mouseReact = true, 
-  ...rest 
+  mouseReact = true,
+  className = '',
+  style,
 }: IridescenceProps) {
   const ctnDom = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0.5, y: 0.5 });
@@ -138,5 +141,5 @@ export default function Iridescence({
     };
   }, [color, speed, amplitude, mouseReact]);
 
-  return <div ref={ctnDom} className="iridescence-container" {...rest} />;
+  return <div ref={ctnDom} className={`iridescence-container ${className}`} style={style} />;
 }
